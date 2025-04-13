@@ -51,6 +51,10 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
     reputationImpact: number;
   } | null>(null);
   
+  // Mobile responsiveness state
+  const [isMobile, setIsMobile] = useState(false);
+  const [showEmailList, setShowEmailList] = useState(false);
+  
   // Timer references and state
   const emailTimerRef = useRef<NodeJS.Timeout | null>(null);
   const gameTimeRef = useRef<number>(0);
@@ -72,6 +76,29 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
   
   // Available emails pool
   const [availableEmails, setAvailableEmails] = useState<Email[]>([]);
+  
+  // Check if device is mobile based on window size
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    // Initial check
+    checkIsMobile();
+    
+    // Add event listener for window resize
+    window.addEventListener('resize', checkIsMobile);
+    
+    // Clean up
+    return () => window.removeEventListener('resize', checkIsMobile);
+  }, []);
+  
+  // When an email is selected on mobile, hide the email list
+  useEffect(() => {
+    if (isMobile && selectedEmail) {
+      setShowEmailList(false);
+    }
+  }, [selectedEmail, isMobile]);
   
   // Play email notification sound
   const playEmailNotification = useCallback(() => {
@@ -379,6 +406,15 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
     // Set the selected email
     setSelectedEmail(email);
     
+    // On mobile, hide the email list when an email is selected
+    if (isMobile) {
+      setShowEmailList(false);
+    }
+  };
+  
+  // Handle back button click on mobile
+  const handleBackToInbox = () => {
+    setShowEmailList(true);
   };
   
   // Check if a choice can be selected based on available resources
@@ -455,6 +491,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
     }
     // Remove the email from inbox
     setInbox(prev => prev.filter(email => email.id !== selectedEmail.id));
+    setShowEmailList(true);
   };
   
   // Format currency
@@ -498,6 +535,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
     // Reset game time when starting
     gameTimeRef.current = 0;
     lastEmailTimeRef.current = 0;
+    setShowEmailList(true);
   };
   
   // Format time for display (MM:SS)
@@ -509,7 +547,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
   
   return (
     <Container>
-      <Header>
+      <Header isMobile={isMobile}>
         <StatusItem>
           <StatusLabel>💰 CDO Budget:</StatusLabel>
           <StatusValue>{formatCurrency(cdoBudget)}</StatusValue>
@@ -542,7 +580,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
       </Header>
       
       <ContentContainer>
-        <InboxPanel>
+        <InboxPanel isMobile={isMobile} showEmailList={showEmailList}>
           <InboxHeader>
             {inbox.length < maxEmails - 3 && <InboxTitle>Inbox ({inbox.length}/{maxEmails})</InboxTitle>}
             {inbox.length >= maxEmails - 3 && <InboxTitle style={{ color: '#cf5628' }}>Inbox ({inbox.length}/{maxEmails})</InboxTitle>}
@@ -574,10 +612,15 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
           </EmailList>
         </InboxPanel>
         
-        <MainPanel>
+        <MainPanel isMobile={isMobile} showEmailList={showEmailList}>
           {selectedEmail ? (
             <>
               <EmailHeader>
+                {isMobile && (
+                  <BackButton onClick={handleBackToInbox}>
+                    ← Back to Inbox
+                  </BackButton>
+                )}
                 <EmailSubject>
                   {selectedEmail.title}
                   {selectedEmail.isUrgent && (
@@ -725,21 +768,49 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  
+  @media (max-width: 768px) {
+    height: 100vh;
+    border-radius: 0;
+    box-shadow: none;
+  }
 `;
 
-const Header = styled.div`
+interface HeaderProps {
+  isMobile: boolean;
+}
+
+const Header = styled.div<HeaderProps>`
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 15px 20px;
   background: #f8f9fa;
   border-bottom: 1px solid #dadce0;
+  
+  @media (max-width: 768px) {
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px;
+  }
+  
+  ${props => props.isMobile && `
+    & > div {
+      flex: 1 0 45%;
+      min-width: auto;
+      margin-bottom: 8px;
+    }
+  `}
 `;
 
 const StatusItem = styled.div`
   display: flex;
   flex-direction: column;
   min-width: 150px;
+  
+  @media (max-width: 768px) {
+    min-width: auto;
+  }
 `;
 
 const StatusLabel = styled.div`
@@ -756,12 +827,20 @@ const StatusValue = styled.div<StatusValueProps>`
   font-size: 16px;
   font-weight: bold;
   color: ${props => props.profit === false ? '#cf5628' : '#3c4043'};
+  
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
 `;
 
 const MetricItem = styled.div`
   display: flex;
   flex-direction: column;
   width: 200px;
+  
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `;
 
 const MetricLabel = styled.div`
@@ -813,14 +892,33 @@ const ContentContainer = styled.div`
   display: flex;
   flex: 1;
   overflow: hidden;
+  
+  @media (max-width: 768px) {
+    position: relative;
+  }
 `;
 
-const InboxPanel = styled.div`
+interface InboxPanelProps {
+  isMobile: boolean;
+  showEmailList: boolean;
+}
+
+const InboxPanel = styled.div<InboxPanelProps>`
   width: 350px;
   border-right: 1px solid #dadce0;
   display: flex;
   flex-direction: column;
   background: #f1f3f4;
+  
+  @media (max-width: 768px) {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    z-index: 1;
+    display: ${props => props.isMobile && !props.showEmailList ? 'none' : 'flex'};
+  }
 `;
 
 const InboxHeader = styled.div`
@@ -930,17 +1028,56 @@ const EmailPreview = styled.div`
   text-overflow: ellipsis;
 `;
 
-const MainPanel = styled.div`
+interface MainPanelProps {
+  isMobile: boolean;
+  showEmailList: boolean;
+}
+
+const MainPanel = styled.div<MainPanelProps>`
   flex: 1;
   display: flex;
   flex-direction: column;
   background: white;
   overflow-y: auto;
+  
+  @media (max-width: 768px) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: ${props => props.isMobile && !props.showEmailList ? '2' : '0'};
+    display: ${props => props.isMobile && props.showEmailList ? 'none' : 'flex'};
+  }
 `;
 
 const EmailHeader = styled.div`
   padding: 20px;
   border-bottom: 1px solid #dadce0;
+  position: relative;
+  
+  @media (max-width: 768px) {
+    padding-top: 50px;
+  }
+`;
+
+const BackButton = styled.button`
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background: #35adb6;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  
+  &:hover {
+    background: #2d9198;
+  }
 `;
 
 const EmailSubject = styled.div`
@@ -951,6 +1088,12 @@ const EmailSubject = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
+  
+  @media (max-width: 768px) {
+    font-size: 18px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
 `;
 
 const UrgentBadge = styled.span`
@@ -969,6 +1112,11 @@ const UrgentBadge = styled.span`
     to {
       opacity: 0.7;
     }
+  }
+  
+  @media (max-width: 768px) {
+    font-size: 12px;
+    align-self: flex-start;
   }
 `;
 
@@ -990,11 +1138,20 @@ const EmailContent = styled.div`
       margin-bottom: 0;
     }
   }
+  
+  @media (max-width: 768px) {
+    padding: 15px;
+    font-size: 14px;
+  }
 `;
 
 const ResponseOptions = styled.div`
   padding: 20px;
   border-top: 1px solid #dadce0;
+  
+  @media (max-width: 768px) {
+    padding: 15px;
+  }
 `;
 
 const ResponseTitle = styled.div`
@@ -1069,6 +1226,10 @@ const OutcomeContainer = styled.div`
   padding: 20px;
   border-top: 1px solid #dadce0;
   background: #f8f9fa;
+  
+  @media (max-width: 768px) {
+    padding: 15px;
+  }
 `;
 
 const OutcomeMessage = styled.div`
@@ -1076,6 +1237,10 @@ const OutcomeMessage = styled.div`
   line-height: 1.6;
   color: #202124;
   margin-bottom: 15px;
+  
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
 `;
 
 const ImpactContainer = styled.div`
@@ -1120,6 +1285,10 @@ const EmptySelection = styled.div`
   align-items: center;
   padding: 20px;
   text-align: center;
+  
+  @media (max-width: 768px) {
+    padding: 15px;
+  }
 `;
 
 const EmptyIcon = styled.div`
@@ -1132,6 +1301,10 @@ const EmptyMessage = styled.div`
   font-weight: 500;
   color: #5f6368;
   margin-bottom: 20px;
+  
+  @media (max-width: 768px) {
+    font-size: 16px;
+  }
 `;
 
 const EmptyWarning = styled.div`
@@ -1139,6 +1312,11 @@ const EmptyWarning = styled.div`
   color: #cf5628;
   line-height: 1.5;
   max-width: 700px;
+  
+  @media (max-width: 768px) {
+    font-size: 13px;
+    padding: 15px !important;
+  }
 `;
 
 const StartButton = styled.button`
@@ -1180,12 +1358,23 @@ const MusicButton = styled.button`
   &:active {
     background: #ceeaed;
   }
+  
+  @media (max-width: 768px) {
+    order: -1;
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+  }
 `;
 
 const TimeDisplay = styled.div<{gameStarted: boolean}>`
   font-size: 16px;
   font-weight: bold;
   color: ${props => props.gameStarted && props.children === '0:00' ? '#cf5628' : '#3c4043'};
+  
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
 `;
 
 export default GameScreen; 
