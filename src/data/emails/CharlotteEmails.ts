@@ -1436,4 +1436,5 @@ const BudgetEmails: Email[] = [
     }
   ];
 
-export default DataBreachEmails; 
+const allEmails = [...DataBreachEmails, ...DataQualityEmails, ...GDPREmails, ...HREmails, ...StrategyEmails, ...MiscEmails, ...BudgetEmails];
+export default allEmails; 
