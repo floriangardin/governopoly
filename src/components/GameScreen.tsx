@@ -283,16 +283,6 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
         });
         return;
       }
-      if (cdoBudget <= 0) {
-        clearInterval(gameInterval);
-        clearUrgentEmails();
-        onGameDefeat('burnout', {
-          cdoBudget,
-          companyProfit,
-          dataQuality,
-          reputation
-        });
-      }
       
       // Add regular emails regardless of urgent status
       const timeSinceLastEmail = gameTimeRef.current - lastEmailTimeRef.current;
@@ -701,10 +691,15 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
             <EmptySelection >
               <EmptyIcon>📧</EmptyIcon>
               <EmptyMessage >Select an email from your inbox to respond</EmptyMessage>
-              <EmptyWarning style={{ border: '2px solid #cf5628', borderRadius: '8px', padding: '20px' }}>
+              <EmptyWarning style={{ border: '2px solid #cf5628', borderRadius: '8px', padding: '30px' }}>
                 <strong>⚠️ IMPORTANT ⚠️</strong><br />
-                • Urgent emails must be answered within 10 seconds<br />
-                • If you accumulate 7 or more unanswered emails, you'll burn out
+                • Your goal is to maximize the profit (📈) of the company <br />
+                • You have a budget to spend (💰), you need to have the money for each associated decision <br />
+                • You'll need minimal amount of data quality (📊) and reputation (⭐) to take the best decisions <br />
+                • Urgent emails (🔴) must be answered within 10 seconds<br />
+                • If you accumulate {maxEmails} or more unanswered emails, you'll lose the game<br />
+                • The game lasts {Math.floor(totalGameTime / (1000 * 60))} minutes<br />
+
               </EmptyWarning>
               {!gameStarted && (
                 <StartButton onClick={handleStartGame}>
@@ -1143,7 +1138,7 @@ const EmptyWarning = styled.div`
   font-size: 14px;
   color: #cf5628;
   line-height: 1.5;
-  max-width: 400px;
+  max-width: 700px;
 `;
 
 const StartButton = styled.button`
