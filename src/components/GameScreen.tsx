@@ -30,7 +30,8 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
   const [month, setMonth] = useState(initialMonth);
   const [dataQuality, setDataQuality] = useState(50); // 0-100 scale
   const [reputation, setReputation] = useState(50); // 0-100 scale
-  
+  const companyName = companyContext.name;
+  const maxEmails = 7;
   // Audio ref for background music
   const backgroundMusicRef = useRef<HTMLAudioElement | null>(null);
   const [isMusicPlaying, setIsMusicPlaying] = useState(true);
@@ -57,6 +58,8 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
 
   // Track urgent email timers
   const [urgentTimers, setUrgentTimers] = useState<{[emailId: string]: NodeJS.Timeout}>({});
+  // Use a ref to track timers for cleanup
+  const urgentTimersRef = useRef<{[emailId: string]: NodeJS.Timeout}>({});
   // Track urgent email start times
   const [urgentTimerStartTimes, setUrgentTimerStartTimes] = useState<{[emailId: string]: number}>({});
   // Force UI updates for timers
@@ -107,6 +110,9 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
     };
   }, []);
   
+  const emailInStack = (emailId: string): boolean => {
+    return inbox.findIndex(email => email.id === emailId) !== -1;
+  }
   // Toggle music playback
   const toggleMusic = useCallback(() => {
     setIsMusicPlaying(prev => !prev);
@@ -127,8 +133,8 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
   
   // Function to clear all urgent email timers
   const clearUrgentEmails = useCallback(() => {
-    // Clear all timeout references
-    Object.values(urgentTimers).forEach(timerId => {
+    // Clear all timeout references using the ref (always has latest values)
+    Object.values(urgentTimersRef.current).forEach(timerId => {
       if (timerId) {
         clearTimeout(timerId);
       }
@@ -136,8 +142,10 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
     
     // Reset the timers state
     setUrgentTimers({});
+    urgentTimersRef.current = {};
     setUrgentTimerStartTimes({});
-  }, [urgentTimers]);
+  }, []); // No dependencies needed since we're using a ref
+  
   // Initialize email pool
   useEffect(() => {
     // Create a deep copy to avoid mutating the original data
@@ -210,9 +218,9 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
       
       // Clear all timers
       console.log('Data breach detected. Game over.');
-      Object.values(urgentTimers).forEach(timer => clearTimeout(timer));
-      // End the game with a data breach defeat
+      console.log("urgentTimers", urgentTimersRef.current);
       clearUrgentEmails();
+      // End the game with a data breach defeat
       onGameDefeat('dataBreach', {
         cdoBudget,
         companyProfit,
@@ -221,12 +229,18 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
       });
     }, 10000); // 10 seconds
     
-    // Save the timer reference
-    setUrgentTimers(prev => ({
-      ...prev,
-      [emailId]: timer
-    }));
+    // Save the timer reference in both state and ref
+    setUrgentTimers(prev => {
+      const newTimers = {
+        ...prev,
+        [emailId]: timer
+      };
+      // Also update the ref
+      urgentTimersRef.current = newTimers;
+      return newTimers;
+    });
   };
+
 
   
   useEffect(() => {
@@ -238,7 +252,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
       gameTimeRef.current += 100; // 100ms tick
       
       // Check for burnout (too many emails)
-      if (inbox.length >= 5) {
+      if (inbox.length >= maxEmails) {
         clearInterval(gameInterval);
         clearUrgentEmails();
         onGameDefeat('burnout', {
@@ -294,7 +308,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
       
       // Occasionally add an urgent email (about every 30-45 seconds)
       // Only add a new urgent if there isn't already one in progress
-      if (Math.random() < 0.01) { // 0.3% chance per 100ms = approx every 33 seconds
+      if (Math.random() < 0.05) { // 0.3% chance per 100ms = approx every 33 seconds
         const urgentEmails = availableEmails.filter(email => email.isUrgent);
         
         if (urgentEmails.length > 0) {
@@ -356,6 +370,39 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
     
   };
   
+  // Check if a choice can be selected based on available resources
+  const canSelectChoice = (choice: Choice): { canSelect: boolean; reason?: string } => {
+    // Check if we have enough budget
+    if (choice.outcome.budgetImpact < 0 && Math.abs(choice.outcome.budgetImpact) > cdoBudget) {
+      return { canSelect: false, reason: 'Insufficient budget' };
+    }
+    
+    // Check if data quality would drop below 0
+    if (choice.outcome.dataQualityImpact < 0 && Math.abs(choice.outcome.dataQualityImpact) > dataQuality) {
+      return { canSelect: false, reason: 'Insufficient data quality' };
+    }
+    
+    // Check if reputation would drop below 0
+    if (choice.outcome.reputationImpact < 0 && Math.abs(choice.outcome.reputationImpact) > reputation) {
+      return { canSelect: false, reason: 'Insufficient reputation' };
+    }
+    
+    return { canSelect: true };
+  };
+
+  // Format impact with color
+  const formatImpactWithColor = (value: number, isPercentage: boolean = false): { text: string; color: string } => {
+    if (value === 0) return { text: 'No change', color: '#5f6368' };
+    
+    const prefix = value > 0 ? '+' : '';
+    const text = isPercentage ? `${prefix}${value}%` : `${prefix}${formatCurrency(value)}`;
+    
+    // Green for positive, secondary color for negative
+    const color = value > 0 ? '#35adb6' : '#cf5628';
+    
+    return { text, color };
+  };
+  
   // Handle choice selection
   const handleChoiceSelect = (choice: Choice) => {
     if (!selectedEmail) return;
@@ -386,12 +433,17 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
 
     if(selectedEmail.isUrgent) {
       // Clear timer
-      clearTimeout(urgentTimers[selectedEmail.id]);
+      const timerId = urgentTimers[selectedEmail.id];
+      if(timerId) {
+        clearTimeout(timerId);
+        // Also update the ref
+        const newTimers = {...urgentTimersRef.current};
+        delete newTimers[selectedEmail.id];
+        urgentTimersRef.current = newTimers;
+      }
     }
-    
     // Remove the email from inbox
     setInbox(prev => prev.filter(email => email.id !== selectedEmail.id));
-    
   };
   
   // Format currency
@@ -448,26 +500,26 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
     <Container>
       <Header>
         <StatusItem>
-          <StatusLabel>CDO Budget:</StatusLabel>
+          <StatusLabel>💰 CDO Budget:</StatusLabel>
           <StatusValue>{formatCurrency(cdoBudget)}</StatusValue>
         </StatusItem>
         <StatusItem>
-          <StatusLabel>Company Profit:</StatusLabel>
+          <StatusLabel>📈 Company Profit:</StatusLabel>
           <StatusValue profit={companyProfit >= 0}>{formatCurrency(companyProfit)}</StatusValue>
         </StatusItem>
         <MetricItem>
-          <StatusLabel>Time Remaining:</StatusLabel>
+          <StatusLabel>⏱️ Time Remaining:</StatusLabel>
           <TimeDisplay gameStarted={gameStarted}>{gameStarted ? formatTime(remainingTime) : "--:--"}</TimeDisplay>
         </MetricItem>
         <MetricItem>
-          <MetricLabel>Data Quality:</MetricLabel>
+          <MetricLabel>📊 Data Quality:</MetricLabel>
           <ProgressContainer>
             <ProgressBar value={dataQuality} max={100} color="#35adb6" />
             <ProgressValue>{dataQuality}%</ProgressValue>
           </ProgressContainer>
         </MetricItem>
         <MetricItem>
-          <MetricLabel>Reputation:</MetricLabel>
+          <MetricLabel>⭐ Reputation:</MetricLabel>
           <ProgressContainer>
             <ProgressBar value={reputation} max={100} color="#f3ad41" />
             <ProgressValue>{reputation}%</ProgressValue>
@@ -481,8 +533,8 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
       <ContentContainer>
         <InboxPanel>
           <InboxHeader>
-            {inbox.length < 3 && <InboxTitle>Inbox ({inbox.length}/5)</InboxTitle>}
-            {inbox.length >= 3 && <InboxTitle style={{ color: '#cf5628' }}>Inbox ({inbox.length}/5)</InboxTitle>}
+            {inbox.length < maxEmails - 3 && <InboxTitle>Inbox ({inbox.length}/{maxEmails})</InboxTitle>}
+            {inbox.length >= maxEmails - 3 && <InboxTitle style={{ color: '#cf5628' }}>Inbox ({inbox.length}/{maxEmails})</InboxTitle>}
             <InboxSubtitle>Most recent first</InboxSubtitle>
           </InboxHeader>
           
@@ -526,23 +578,65 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
                 <EmailFrom>From: {selectedEmail.sender}</EmailFrom>
               </EmailHeader>
               
-              <EmailContent>
+              {!outcomeMessage && <EmailContent>
                 {selectedEmail.content.split('\n').map((paragraph, index) => (
                   <p key={index}>{paragraph}</p>
                 ))}
-              </EmailContent>
+              </EmailContent>}
               
               {!outcomeMessage ? (
                 <ResponseOptions>
                   <ResponseTitle>Your Response:</ResponseTitle>
-                  {selectedEmail.choices.map(choice => (
-                    <ResponseButton 
-                      key={choice.id}
-                      onClick={() => handleChoiceSelect(choice)}
-                    >
-                      {choice.text}
-                    </ResponseButton>
-                  ))}
+                  {selectedEmail.choices.map(choice => {
+                    const { canSelect, reason } = canSelectChoice(choice);
+                    return (
+                      <ResponseButton 
+                        key={choice.id}
+                        onClick={() => canSelect && handleChoiceSelect(choice)}
+                        disabled={!canSelect}
+                        isDisabled={!canSelect}
+                      >
+                        <ResponseButtonContent>
+                          <div>{choice.text}</div>
+                          <ResponseImpacts>
+                            {choice.outcome.budgetImpact !== 0 && (
+                              <ResponseImpact 
+                                color={formatImpactWithColor(choice.outcome.budgetImpact).color}
+                                isUnavailable={!canSelect && choice.outcome.budgetImpact < 0 && Math.abs(choice.outcome.budgetImpact) > cdoBudget}
+                              >
+                                💰 {formatImpactWithColor(choice.outcome.budgetImpact).text}
+                              </ResponseImpact>
+                            )}
+                            
+                            {choice.outcome.profitImpact !== 0 && (
+                              <ResponseImpact color={formatImpactWithColor(choice.outcome.profitImpact).color}>
+                                📈 {formatImpactWithColor(choice.outcome.profitImpact).text}
+                              </ResponseImpact>
+                            )}
+                            
+                            {choice.outcome.dataQualityImpact !== 0 && (
+                              <ResponseImpact 
+                                color={formatImpactWithColor(choice.outcome.dataQualityImpact, true).color}
+                                isUnavailable={!canSelect && choice.outcome.dataQualityImpact < 0 && Math.abs(choice.outcome.dataQualityImpact) > dataQuality}
+                              >
+                                📊 {formatImpactWithColor(choice.outcome.dataQualityImpact, true).text}
+                              </ResponseImpact>
+                            )}
+                            
+                            {choice.outcome.reputationImpact !== 0 && (
+                              <ResponseImpact 
+                                color={formatImpactWithColor(choice.outcome.reputationImpact, true).color}
+                                isUnavailable={!canSelect && choice.outcome.reputationImpact < 0 && Math.abs(choice.outcome.reputationImpact) > reputation}
+                              >
+                                ⭐ {formatImpactWithColor(choice.outcome.reputationImpact, true).text}
+                              </ResponseImpact>
+                            )}
+                          </ResponseImpacts>
+                        </ResponseButtonContent>
+                        {!canSelect && <UnavailableReason>{reason}</UnavailableReason>}
+                      </ResponseButton>
+                    );
+                  })}
                 </ResponseOptions>
               ) : (
                 <OutcomeContainer>
@@ -551,28 +645,28 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
                   {outcomeEffects && (
                     <ImpactContainer>
                       <Impact>
-                        <ImpactLabel>Budget:</ImpactLabel>
+                        <ImpactLabel>💰 Budget:</ImpactLabel>
                         <ImpactValue color={getImpactColor(outcomeEffects.budgetImpact)}>
                           {formatImpact(outcomeEffects.budgetImpact)}
                         </ImpactValue>
                       </Impact>
                       
                       <Impact>
-                        <ImpactLabel>Profit:</ImpactLabel>
+                        <ImpactLabel>📈 Profit:</ImpactLabel>
                         <ImpactValue color={getImpactColor(outcomeEffects.profitImpact)}>
                           {formatImpact(outcomeEffects.profitImpact)}
                         </ImpactValue>
                       </Impact>
                       
                       <Impact>
-                        <ImpactLabel>Data Quality:</ImpactLabel>
+                        <ImpactLabel>📊 Data Quality:</ImpactLabel>
                         <ImpactValue color={getImpactColor(outcomeEffects.dataQualityImpact)}>
                           {formatImpact(outcomeEffects.dataQualityImpact, true)}
                         </ImpactValue>
                       </Impact>
                       
                       <Impact>
-                        <ImpactLabel>Reputation:</ImpactLabel>
+                        <ImpactLabel>⭐ Reputation:</ImpactLabel>
                         <ImpactValue color={getImpactColor(outcomeEffects.reputationImpact)}>
                           {formatImpact(outcomeEffects.reputationImpact, true)}
                         </ImpactValue>
@@ -589,7 +683,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
               <EmptyWarning style={{ border: '2px solid #cf5628', borderRadius: '8px', padding: '20px' }}>
                 <strong>⚠️ IMPORTANT ⚠️</strong><br />
                 • Urgent emails must be answered within 10 seconds<br />
-                • If you accumulate 5 or more unanswered emails, you'll burn out
+                • If you accumulate 7 or more unanswered emails, you'll burn out
               </EmptyWarning>
               {!gameStarted && (
                 <StartButton onClick={handleStartGame}>
@@ -894,27 +988,65 @@ const ResponseTitle = styled.div`
   margin-bottom: 15px;
 `;
 
-const ResponseButton = styled.button`
+interface ResponseButtonProps {
+  isDisabled?: boolean;
+}
+
+const ResponseButton = styled.button<ResponseButtonProps>`
   width: 100%;
   padding: 12px 15px;
-  background: #f8f9fa;
-  border: 1px solid #dadce0;
+  background: ${props => props.isDisabled ? '#f1f1f1' : '#f8f9fa'};
+  border: 1px solid ${props => props.isDisabled ? '#dadce0' : '#dadce0'};
   border-radius: 8px;
   font-size: 14px;
   text-align: left;
-  color: #202124;
+  color: ${props => props.isDisabled ? '#9aa0a6' : '#202124'};
   margin-bottom: 10px;
-  cursor: pointer;
+  cursor: ${props => props.isDisabled ? 'not-allowed' : 'pointer'};
+  opacity: ${props => props.isDisabled ? 0.8 : 1};
   transition: all 0.2s;
   
   &:hover {
-    background: #e8f7f8;
-    border-color: #35adb6;
+    background: ${props => props.isDisabled ? '#f1f1f1' : '#e8f7f8'};
+    border-color: ${props => props.isDisabled ? '#dadce0' : '#35adb6'};
   }
   
   &:last-child {
     margin-bottom: 0;
   }
+`;
+
+const ResponseButtonContent = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const ResponseImpacts = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+`;
+
+interface ResponseImpactProps {
+  color: string;
+  isUnavailable?: boolean;
+}
+
+const ResponseImpact = styled.span<ResponseImpactProps>`
+  color: ${props => props.isUnavailable ? '#cf0000' : props.color};
+  font-weight: ${props => props.isUnavailable ? 'bold' : 'normal'};
+  font-size: 13px;
+  background: ${props => props.isUnavailable ? 'rgba(207, 0, 0, 0.1)' : 'transparent'};
+  padding: ${props => props.isUnavailable ? '2px 4px' : '0'};
+  border-radius: 4px;
+`;
+
+const UnavailableReason = styled.div`
+  color: #cf0000;
+  font-size: 12px;
+  margin-top: 5px;
+  font-weight: bold;
 `;
 
 const OutcomeContainer = styled.div`

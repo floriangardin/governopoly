@@ -15,14 +15,14 @@ export type DefeatReason = 'budget' | 'dataQuality' | 'reputation' | 'burnout' |
 
 // Company context to be used throughout the game
 export const companyContext = {
-  name: "GlobalTech Innovations",
-  industry: "Technology and Data Services",
-  employees: 5200,
+  name: "Nine Lives insurances.",
+  industry: "Insurance",
+  employees: 1000,
   revenue: "$1.2 billion",
   founded: 2005,
   headquarters: "San Francisco",
   dataTeamSize: 45,
-  description: "A multinational technology company providing cloud services, data analytics, and enterprise software solutions to Fortune 500 companies."
+  description: "A multinational insurance company providing insurance services to the furry world."
 };
 
 function App() {

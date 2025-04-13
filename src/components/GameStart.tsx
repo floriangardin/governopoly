@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 interface GameStartProps {
@@ -20,13 +20,89 @@ const formatNumber = (num: number): string => {
 };
 
 const GameStart: React.FC<GameStartProps> = ({ onStart, companyContext }) => {
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [audioError, setAudioError] = useState<string | null>(null);
+  const [isMusicPlaying, setIsMusicPlaying] = useState(true);
+
+  useEffect(() => {
+    // Play background music when component mounts
+    if (audioRef.current) {
+      audioRef.current.volume = 0.3; // Set volume to 30%
+      
+      // Attempt to play the audio
+      const playPromise = audioRef.current.play();
+      
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            console.log('Audio playback started successfully');
+          })
+          .catch(error => {
+            // Autoplay might be blocked by browser policies
+            console.error('Audio playback failed:', error);
+            setAudioError('Audio autoplay was prevented by your browser. Click anywhere to start the music.');
+            
+            // Add a click handler to start audio when user interacts with the page
+            const startAudio = () => {
+              if (audioRef.current) {
+                audioRef.current.play()
+                  .then(() => {
+                    document.removeEventListener('click', startAudio);
+                    setAudioError(null);
+                  })
+                  .catch(err => console.error('Still failed to play audio:', err));
+              }
+            };
+            
+            document.addEventListener('click', startAudio);
+          });
+      }
+    }
+
+    // Cleanup function to stop audio when component unmounts
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+      // Remove any click listeners
+      document.removeEventListener('click', () => {});
+    };
+  }, []);
+
+  // Toggle music playback
+  const toggleMusic = () => {
+    setIsMusicPlaying(prev => !prev);
+  };
+  
+  // Effect to handle music play/pause based on state
+  useEffect(() => {
+    if (audioRef.current) {
+      if (isMusicPlaying) {
+        audioRef.current.play().catch(error => {
+          console.error('Background music playback failed:', error);
+        });
+      } else {
+        audioRef.current.pause();
+      }
+    }
+  }, [isMusicPlaying]);
+
   return (
     <Container>
-      <Title>Governopoly</Title>
+      <audio ref={audioRef} src="/main_menu.mp3" loop preload="auto" />
+      {audioError && <AudioMessage>{audioError}</AudioMessage>}
+      
+      <HeaderContainer>
+        <Title>Nine Lives</Title>
+        <MusicButton onClick={toggleMusic}>
+          {isMusicPlaying ? '🔊' : '🔇'}
+        </MusicButton>
+      </HeaderContainer>
       <Subtitle>The Data Governance Challenge</Subtitle>
       
       <Description>
-        Welcome to Governopoly, where you'll take on the role of the Chief Data Officer (CDO) 
+        Welcome to Nine Lives, where you'll take on the role of the Chief Data Officer (CDO) 
         of {companyContext.name}, a leading company in the {companyContext.industry} industry. 
         Your decisions over the next year will impact the company's data governance, security, 
         compliance, and ultimately its bottom line.
@@ -34,7 +110,7 @@ const GameStart: React.FC<GameStartProps> = ({ onStart, companyContext }) => {
       
       <CompanyCard>
         <CompanyHeader>
-          <CompanyLogo>{companyContext.name.charAt(0)}</CompanyLogo>
+          <CompanyLogoImage src="/logo.png" alt={`${companyContext.name} logo`} />
           <CompanyName>{companyContext.name}</CompanyName>
         </CompanyHeader>
         
@@ -118,6 +194,14 @@ const Container = styled.div`
   align-items: center;
 `;
 
+const HeaderContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  position: relative;
+`;
+
 const Title = styled.h1`
   font-size: 48px;
   color: #35adb6;
@@ -149,6 +233,7 @@ const CompanyCard = styled.div`
 const CompanyHeader = styled.div`
   display: flex;
   align-items: center;
+  justify-content: center;
   margin-bottom: 15px;
 `;
 
@@ -227,6 +312,13 @@ const RoleDescription = styled.p`
   margin: 0;
 `;
 
+const CompanyLogoImage = styled.img`
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin-right: 15px;
+`;
+
 const StartButton = styled.button`
   background: #35adb6;
   color: white;
@@ -262,6 +354,44 @@ const Rules = styled.div`
       margin-bottom: 10px;
       color: #3c4043;
     }
+  }
+`;
+
+const AudioMessage = styled.div`
+  background: rgba(53, 173, 182, 0.1);
+  padding: 10px 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  text-align: center;
+  color: #35adb6;
+  font-size: 14px;
+  width: 100%;
+  border: 1px solid #35adb6;
+`;
+
+const MusicButton = styled.button`
+  background: #f1f3f4;
+  border: 1px solid #dadce0;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+  outline: none;
+  position: absolute;
+  right: 0;
+  
+  &:hover {
+    background: #e8f7f8;
+    border-color: #35adb6;
+  }
+  
+  &:active {
+    background: #ceeaed;
   }
 `;
 
