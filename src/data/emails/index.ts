@@ -5,6 +5,7 @@ import GDPREmails from './GDPREmails';
 import HREmails from './HREmails';
 import StrategyEmails from './StrategyEmails';
 import MiscEmails from './MiscEmails';
+import CharlotteEmails from './CharlotteEmails';
 
 // Export all email categories
 export {
@@ -13,18 +14,14 @@ export {
   GDPREmails,
   HREmails,
   StrategyEmails,
-  MiscEmails
+  MiscEmails,
+  CharlotteEmails,
 };
 
 // Function to get all emails in a single array
 export const getAllEmails = (): Email[] => {
   return [
-    ...DataBreachEmails,
-    ...DataQualityEmails,
-    ...GDPREmails,
-    ...HREmails,
-    ...StrategyEmails,
-    ...MiscEmails
+    ...CharlotteEmails
   ];
 };
 

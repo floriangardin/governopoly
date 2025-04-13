@@ -3,7 +3,7 @@ export interface Email {
   sender: string;
   title: string;
   content: string;
-  category: 'dataBreach' | 'dataQuality' | 'hr' | 'strategy' | 'gdpr' | 'misc';
+  category: 'dataBreach' | 'dataQuality' | 'hr' | 'strategy' | 'gdpr' | 'misc' | 'budget';
   isUrgent: boolean;
   choices: Choice[];
 }
