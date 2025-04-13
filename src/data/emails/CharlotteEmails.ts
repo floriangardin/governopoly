@@ -22,7 +22,7 @@ Options:
           budgetImpact: -100000,
           profitImpact: -500000,
           dataQualityImpact: 0,
-          reputationImpact: -20
+          reputationImpact: -40
         }
       },
       {
@@ -32,8 +32,8 @@ Options:
           description: 'The continued monitoring revealed it was a false alarm triggered by a new analytics tool. Your measured approach avoided unnecessary disruption.',
           budgetImpact: -200000,
           profitImpact: 0,
-          dataQualityImpact: 0,
-          reputationImpact: -5
+          dataQualityImpact: -5,
+          reputationImpact: -10
         }
       },
       {
@@ -43,8 +43,8 @@ Options:
           description: 'Your transparency was appreciated by customers, but it caused significant concern. Further investigation revealed the breach was much smaller than initially thought, making your response seem somewhat excessive.',
           budgetImpact: -20000,
           profitImpact: -300000,
-          dataQualityImpact: 0,
-          reputationImpact: -8
+          dataQualityImpact: -5,
+          reputationImpact: -25
         }
       }
     ]
@@ -78,10 +78,10 @@ Options:
         text: 'Quietly notify only affected employees',
         outcome: {
           description: 'Your targeted approach contained initial panic, but a whistleblower leaked the breach to the press, causing accusations of a cover-up. The controlled initial response was overshadowed by the perception of secrecy.',
-          budgetImpact: -50000,
+          budgetImpact: -40000,
           profitImpact: -300000,
           dataQualityImpact: -5,
-          reputationImpact: -15
+          reputationImpact: -30
         }
       },
       {
@@ -91,8 +91,8 @@ Options:
           description: 'The delay allowed your team to develop a comprehensive response, but it violated regulatory requirements for timely notification. The company faces potential fines for the delayed reporting.',
           budgetImpact: -100000,
           profitImpact: -400000,
-          dataQualityImpact: 0,
-          reputationImpact: -5
+          dataQualityImpact: -10,
+          reputationImpact: -15
         }
       }
     ]
@@ -117,8 +117,8 @@ Options:
           description: "The vendor's poor communication and slow response reflected badly on your company. Customers are angry that you attempted to shift responsibility, and regulators question your vendor management practices.",
           budgetImpact: 0,
           profitImpact: -400000,
-          dataQualityImpact: -5,
-          reputationImpact: -20
+          dataQualityImpact: -10,
+          reputationImpact: -30
         }
       },
       {
@@ -128,8 +128,8 @@ Options:
           description: 'Your proactive approach demonstrated strong customer focus but increased costs substantially. The vendor has agreed to partial cost reimbursement, but the incident has strained the relationship.',
           budgetImpact: -150000,
           profitImpact: -200000,
-          dataQualityImpact: -5,
-          reputationImpact: -3
+          dataQualityImpact: -10,
+          reputationImpact: -10
         }
       },
       {
@@ -140,7 +140,7 @@ Options:
           budgetImpact: -300000,
           profitImpact: -100000,
           dataQualityImpact: 5,
-          reputationImpact: 5
+          reputationImpact: 10
         }
       }
     ]
@@ -165,8 +165,8 @@ Options:
           description: 'Payment was made, but only 70% of the data was successfully decrypted. The incident has attracted regulatory attention about your security practices, and there are concerns that paying may encourage future attacks.',
           budgetImpact: -500000,
           profitImpact: -300000,
-          dataQualityImpact: -10,
-          reputationImpact: -20
+          dataQualityImpact: -20,
+          reputationImpact: -40
         }
       },
       {
@@ -176,8 +176,8 @@ Options:
           description: 'The restoration process was successful but took longer than expected. Business operations were impacted, but your firm stance against ransom payments was viewed positively by the board and industry peers.',
           budgetImpact: -100000,
           profitImpact: -200000,
-          dataQualityImpact: -5,
-          reputationImpact: -3
+          dataQualityImpact: -10,
+          reputationImpact: -10
         }
       },
       {
@@ -208,10 +208,10 @@ Options:
       text: "Send a company-wide intro and survey data needs",
       outcome: {
         description: "You gain insights into current gaps and build goodwill.",
-        budgetImpact: -50000,
+        budgetImpact: -30000,
         profitImpact: 0,
         dataQualityImpact: 0,
-        reputationImpact: 3
+        reputationImpact: 10
       }
     },
     {
@@ -219,10 +219,10 @@ Options:
       text: "Meet directly with execs to understand priorities",
       outcome: {
         description: "You align with leadership but miss grassroots issues.",
-        budgetImpact: -20000,
+        budgetImpact: -50000,
         profitImpact: 0,
         dataQualityImpact: 0,
-        reputationImpact: 5
+        reputationImpact: 15
       }
     },
     {
@@ -231,9 +231,9 @@ Options:
       outcome: {
         description: "You identify a few red flags but miss team engagement.",
         budgetImpact: 0,
-        profitImpact: 20000,
-        dataQualityImpact: 2,
-        reputationImpact: -2
+        profitImpact: 50000,
+        dataQualityImpact: 5,
+        reputationImpact: -5
       }
     }
   ]
@@ -251,11 +251,11 @@ Options:
       id: 1,
       text: "Hire a data engineer",
       outcome: {
-        description: "Data infrastructure starts to shape up quickly.",
-        budgetImpact: -160000,
+        description: "Data infrastructure starts to shape up quickly, but the technical profile is not good at business talk",
+        budgetImpact: -150000,
         profitImpact: 200000,
-        dataQualityImpact: 4,
-        reputationImpact: 1
+        dataQualityImpact: 10,
+        reputationImpact: -10
       }
     },
     {
@@ -265,8 +265,8 @@ Options:
         description: "You get quick wins with visual insights.",
         budgetImpact: -120000,
         profitImpact: 300000,
-        dataQualityImpact: 2,
-        reputationImpact: 2
+        dataQualityImpact: 5,
+        reputationImpact: 0
       }
     },
     {
@@ -277,7 +277,7 @@ Options:
         budgetImpact: -200000,
         profitImpact: 100000,
         dataQualityImpact: 10,
-        reputationImpact: 5
+        reputationImpact: 10
       }
     }
   ]
@@ -305,7 +305,7 @@ Options:
         budgetImpact: -100000,
         profitImpact: 300000,
         dataQualityImpact: 15,
-        reputationImpact: 1
+        reputationImpact: -10
       }
     },
     {
@@ -326,7 +326,7 @@ Options:
         description: 'The guild model improved integration with business units but made governance more challenging. Knowledge sharing increased, but inconsistent practices emerged across departments.',
         budgetImpact: -50000,
         profitImpact: 200000,
-        dataQualityImpact: -5,
+        dataQualityImpact: -15,
         reputationImpact: 5
       }
     }
@@ -352,8 +352,8 @@ Options:
         description: 'The salary increases successfully attracted several highly qualified candidates, filling critical roles quickly. However, it created internal equity issues with existing employees requesting similar adjustments.',
         budgetImpact: -500000,
         profitImpact: 500000,
-        dataQualityImpact: 5,
-        reputationImpact: -5
+        dataQualityImpact: 10,
+        reputationImpact: -10
       }
     },
     {
@@ -374,8 +374,8 @@ Options:
         description: 'The university partnership created a steady pipeline of entry-level talent but didn\'t address immediate senior-level needs. The program has enhanced your company\'s reputation in the academic community.',
         budgetImpact: -80000,
         profitImpact: 100000,
-        dataQualityImpact: 5,
-        reputationImpact: 10
+        dataQualityImpact: 0,
+        reputationImpact: 5
       }
     }
   ]
@@ -400,8 +400,8 @@ Options:
         description: 'The policy created focused work time and improved work-life balance. Team satisfaction scores increased, though some stakeholders were frustrated by reduced availability on Fridays.',
         budgetImpact: 0,
         profitImpact: 50000,
-        dataQualityImpact: 5,
-        reputationImpact: 10
+        dataQualityImpact: 0,
+        reputationImpact: 5
       }
     },
     {
@@ -423,7 +423,7 @@ Options:
         budgetImpact: -30000,
         profitImpact: 150000,
         dataQualityImpact: 5,
-        reputationImpact: -3
+        reputationImpact: -5
       }
     }
   ]
@@ -448,8 +448,8 @@ Options:
         description: 'The universal training created a common data vocabulary across the organization. Though initially resisted by some departments, it has improved cross-functional collaboration on data-driven initiatives.',
         budgetImpact: -200000,
         profitImpact: 300000,
-        dataQualityImpact: 10,
-        reputationImpact: 5
+        dataQualityImpact: 5,
+        reputationImpact: 3
       }
     },
     {
@@ -459,8 +459,8 @@ Options:
         description: 'The tailored approach delivered relevant skills to each role, increasing adoption and practical application. Employees appreciated the customized content that directly applied to their daily work.',
         budgetImpact: -500000,
         profitImpact: 600000,
-        dataQualityImpact: 20,
-        reputationImpact: 15
+        dataQualityImpact: 15,
+        reputationImpact: 10
       }
     },
     {
@@ -471,7 +471,7 @@ Options:
         budgetImpact: -100000,
         profitImpact: 150000,
         dataQualityImpact: 5,
-        reputationImpact: 0
+        reputationImpact: -3
       }
     }
   ]
@@ -494,8 +494,8 @@ const BudgetEmails: Email[] = [
         description: "You get full budget for high-performance systems, but profit are not there yet.",
         budgetImpact: 600000,
         profitImpact: 0,
-        dataQualityImpact: 5,
-        reputationImpact: 2
+        dataQualityImpact: 10,
+        reputationImpact: 0
       }
     },
     {
@@ -505,19 +505,19 @@ const BudgetEmails: Email[] = [
         description: "You gain support for a smart rollout plan.",
         budgetImpact: 300000,
         profitImpact: 200000,
-        dataQualityImpact: 3,
-        reputationImpact: 2
+        dataQualityImpact: 5,
+        reputationImpact: 0
       }
     },
     {
       id: 3,
       text: "Use budget tail for now instead",
       outcome: {
-        description: "You save reputation now, but innovation stalls.",
+        description: "You save data quality now, but innovation stalls.",
         budgetImpact: 100000,
         profitImpact: 100000,
-        dataQualityImpact: -1,
-        reputationImpact: -2
+        dataQualityImpact: 0,
+        reputationImpact: -10
       }
     }
   ]
@@ -538,7 +538,7 @@ const BudgetEmails: Email[] = [
         description: "We leap forward and gain a competitive edge.",
         budgetImpact: 500000,
         profitImpact: 400000,
-        dataQualityImpact: 3,
+        dataQualityImpact: 5,
         reputationImpact: 10
       }
     },
@@ -561,7 +561,95 @@ const BudgetEmails: Email[] = [
         budgetImpact: 100000,
         profitImpact: 200000,
         dataQualityImpact: 15,
-        reputationImpact: -2
+        reputationImpact: -5
+      }
+    }
+  ]
+}
+,
+{
+  id: "email-009",
+  sender: "ceo@ninelives.io",
+  title: "Budget Approved: Keep Modernizing Our Data Infrastructure",
+  content: "Thanks to your team’s foundational work, we’re in a strong position to upgrade our data systems. I’ve approved additional budget to help you modernize our claims, underwriting, and risk data pipelines. Choose your path.",
+  category: "strategy",
+  isUrgent: false,
+  choices: [
+    {
+      id: 1,
+      text: "Deploy a full modern data stack across all business units",
+      outcome: {
+        description: "Claims, underwriting, and compliance teams run faster and smarter, but will require further help for quality.",
+        budgetImpact: 500000,
+        profitImpact: 100000,
+        dataQualityImpact: -10,
+        reputationImpact: 5
+      }
+    },
+    {
+      id: 2,
+      text: "Pilot new architecture with claims data first",
+      outcome: {
+        description: "You validate improvements with real results in one key area.",
+        budgetImpact: 300000,
+        profitImpact: 200000,
+        dataQualityImpact: 10,
+        reputationImpact: 10
+      }
+    },
+    {
+      id: 3,
+      text: "Improve legacy systems incrementally",
+      outcome: {
+        description: "Small gains, but big on quality improvements. Older systems remain a bottleneck.",
+        budgetImpact: 150000,
+        profitImpact: 50000,
+        dataQualityImpact: 25,
+        reputationImpact: -10
+      }
+    }
+  ]
+}
+,
+{
+  id: "email-010",
+  sender: "ceo@ninelives.io",
+  title: "Budget Released for Our Claims and Risk Data",
+  content: "With increasing data usage across underwriting and claims, we need to secure our systems. I’ve released additional funds to strengthen data recovery and backup : your move on how to use them.",
+  category: "dataQuality",
+  isUrgent: false,
+  choices: [
+    {
+      id: 1,
+      text: "Partner with a dedicated disaster recovery vendor",
+      outcome: {
+        description: "Claims and risk data are fully protected with industry-best SLAs. Internal team doesn't like it though.",
+        budgetImpact: 500000,
+        profitImpact: 300000,
+        dataQualityImpact: -10,
+        reputationImpact: -20
+      }
+    },
+    {
+      id: 2,
+      text: "Develop internal safeguards for critical data",
+      outcome: {
+        description: "Stronger systems in-house, though some risk remains.",
+        budgetImpact: 300000,
+        profitImpact: 150000,
+        dataQualityImpact: 10,
+        reputationImpact: 0
+      }
+    },
+    {
+      id: 3,
+      text: "Delay protection and monitor system performance",
+      outcome: {
+        description: "Savings now for quality, but risk increased exposure during peak periods.",
+        budgetImpact: 100000,
+        profitImpact: 50000,
+        dataQualityImpact: 20,
+        reputationImpact: 0
       }
     }
   ]
@@ -582,7 +670,7 @@ const BudgetEmails: Email[] = [
         description: "No disruptions, smooth growth for teams and systems.",
         budgetImpact: 300000,
         profitImpact: 0,
-        dataQualityImpact: -2,
+        dataQualityImpact: -10,
         reputationImpact: 5
       }
     },
@@ -594,7 +682,7 @@ const BudgetEmails: Email[] = [
         budgetImpact: 200000,
         profitImpact: 0,
         dataQualityImpact: 5,
-        reputationImpact: 3
+        reputationImpact: 10
       }
     },
     {
@@ -605,7 +693,7 @@ const BudgetEmails: Email[] = [
         budgetImpact: 100000,
         profitImpact: 0,
         dataQualityImpact: 15,
-        reputationImpact: 2
+        reputationImpact: -10
       }
     }
   ]
@@ -626,7 +714,7 @@ const BudgetEmails: Email[] = [
         description: "People across departments are excited and empowered.",
         budgetImpact: 400000,
         profitImpact: 250000,
-        dataQualityImpact: 3,
+        dataQualityImpact: 5,
         reputationImpact: 5
       }
     },
@@ -638,7 +726,7 @@ const BudgetEmails: Email[] = [
         budgetImpact: 200000,
         profitImpact: 400000,
         dataQualityImpact: 2,
-        reputationImpact: 3
+        reputationImpact: 0
       }
     },
     {
@@ -649,7 +737,7 @@ const BudgetEmails: Email[] = [
         budgetImpact: 50000,
         profitImpact: 100000,
         dataQualityImpact: 10,
-        reputationImpact: -2
+        reputationImpact: -10
       }
     }
   ]
@@ -726,7 +814,7 @@ const BudgetEmails: Email[] = [
             budgetImpact: -150000,
             profitImpact: 300000,
             dataQualityImpact: 10,
-            reputationImpact: -3
+            reputationImpact: -10
           }
         },
         {
@@ -774,7 +862,7 @@ const BudgetEmails: Email[] = [
             budgetImpact: -50000,
             profitImpact: 100000,
             dataQualityImpact: 5,
-            reputationImpact: -5
+            reputationImpact: -15
           }
         },
         {
@@ -894,8 +982,8 @@ const BudgetEmails: Email[] = [
             description: 'The minimal approach met basic requirements but drew regulatory scrutiny. The company avoided immediate penalties but remains under increased oversight, and some customers have expressed privacy concerns.',
             budgetImpact: -50000,
             profitImpact: 0,
-            dataQualityImpact: 5,
-            reputationImpact: -10
+            dataQualityImpact: -5,
+            reputationImpact: -15
           }
         }
       ]
@@ -932,7 +1020,7 @@ const BudgetEmails: Email[] = [
             budgetImpact: -50000,
             profitImpact: 50000,
             dataQualityImpact: 0,
-            reputationImpact: 2
+            reputationImpact: -2
           }
         },
         {
@@ -943,7 +1031,7 @@ const BudgetEmails: Email[] = [
             budgetImpact: -100000,
             profitImpact: 0,
             dataQualityImpact: 10,
-            reputationImpact: -5
+            reputationImpact: -10
           }
         }
       ]
@@ -968,7 +1056,7 @@ const BudgetEmails: Email[] = [
             description: 'The updated contracts provided a temporary solution, but legal uncertainties remain. Some privacy-focused customers have expressed concerns about the adequacy of these measures.',
             budgetImpact: -100000,
             profitImpact: -50000,
-            dataQualityImpact: 0,
+            dataQualityImpact: -5,
             reputationImpact: -5
           }
         },
@@ -1016,7 +1104,7 @@ const BudgetEmails: Email[] = [
             description: 'The campaign successfully updated permissions for about 60% of contacts. While the database shrank, the remaining customers are highly engaged and responsive to marketing, improving overall campaign effectiveness.',
             budgetImpact: -100000,
             profitImpact: 150000,
-            dataQualityImpact: 15,
+            dataQualityImpact: -10,
             reputationImpact: 10
           }
         },
@@ -1078,7 +1166,7 @@ const BudgetEmails: Email[] = [
             description: 'The standardized approach provided adequate guidance but missed some industry-specific considerations. Some issues emerged during implementation that required reactive adjustments.',
             budgetImpact: -150000,
             profitImpact: 100000,
-            dataQualityImpact: 5,
+            dataQualityImpact: 0,
             reputationImpact: 3
           }
         },
@@ -1089,7 +1177,7 @@ const BudgetEmails: Email[] = [
             description: 'The limited framework addressed some critical issues but left gaps in other ethical areas. While development proceeded quickly, several features required rework when additional ethical concerns were identified later.',
             budgetImpact: -50000,
             profitImpact: 50000,
-            dataQualityImpact: 0,
+            dataQualityImpact: -10,
             reputationImpact: -3
           }
         }
@@ -1123,11 +1211,11 @@ const BudgetEmails: Email[] = [
           id: 2,
           text: 'Provide training on existing systems',
           outcome: {
-            description: "The training improved agent capabilities but didn't address the fundamental integration issues. Some improvement in efficiency was achieved, though team members still struggle with complex multi-system queries.",
+            description: "The training improved team members capabilities but didn't address the fundamental integration issues. Some improvement in efficiency was achieved, though team members still struggle with complex multi-system queries.",
             budgetImpact: -150000,
             profitImpact: 200000,
             dataQualityImpact: 5,
-            reputationImpact: 2
+            reputationImpact: 0
           }
         },
         {
@@ -1138,7 +1226,7 @@ const BudgetEmails: Email[] = [
             budgetImpact: -100000,
             profitImpact: 250000,
             dataQualityImpact: 10,
-            reputationImpact: -3
+            reputationImpact: -5
           }
         }
       ]
@@ -1185,7 +1273,7 @@ const BudgetEmails: Email[] = [
             description: 'The structured approach yielded methodical improvements but dampened enthusiasm. Several innovative employees expressed disappointment about the lack of creative opportunities and spontaneous collaboration.',
             budgetImpact: -30000,
             profitImpact: 100000,
-            dataQualityImpact: 5,
+            dataQualityImpact: -5,
             reputationImpact: -5
           }
         }
@@ -1284,7 +1372,7 @@ const BudgetEmails: Email[] = [
             description: 'Real-time capabilities have improved operational efficiency but required extensive system upgrades. The technology is impressive, though some departments struggle to adapt their processes to leverage it fully.',
             budgetImpact: -600000,
             profitImpact: 800000,
-            dataQualityImpact: 10,
+            dataQualityImpact: -5,
             reputationImpact: 5
           }
         }
@@ -1321,7 +1409,7 @@ const BudgetEmails: Email[] = [
             description: 'The API program has created a vibrant ecosystem of partners and developers. While implementation was complex, it has positioned the company as a platform leader in the industry.',
             budgetImpact: -500000,
             profitImpact: 1000000,
-            dataQualityImpact: 5,
+            dataQualityImpact: -5,
             reputationImpact: 15
           }
         },
@@ -1425,10 +1513,10 @@ const BudgetEmails: Email[] = [
           id: 3,
           text: 'Prioritize risk and compliance initiatives',
           outcome: {
-            description: 'The risk-focused approach prevented several potential compliance issues and improved audit outcomes. While less visible than other options, it avoided substantial regulatory penalties.',
+            description: 'The risk-focused approach prevented several potential compliance issues and improved audit outcomes. While less visible than other options like quality remediation, it avoided substantial regulatory penalties.',
             budgetImpact: -200000,
             profitImpact: 300000,
-            dataQualityImpact: 10,
+            dataQualityImpact: -10,
             reputationImpact: 25
           }
         }
