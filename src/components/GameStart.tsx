@@ -99,13 +99,13 @@ const GameStart: React.FC<GameStartProps> = ({ onStart, companyContext }) => {
           {isMusicPlaying ? '🔊' : '🔇'}
         </MusicButton>
       </HeaderContainer>
-      <Subtitle>The Data Governance Challenge</Subtitle>
+      <Subtitle>Survive the storm of digital leadership</Subtitle>
       
       <Description>
-        Welcome to Nine Lives, where you'll take on the role of the Chief Data Officer (CDO) 
-        of {companyContext.name}, a leading company in the {companyContext.industry} industry. 
-        Your decisions over the next year will impact the company's data governance, security, 
-        compliance, and ultimately its bottom line.
+        Welcome to {companyContext.name}, I'm pleased that you are taking the challenge of being our new Chief Data Officer (CDO).
+        <br></br><br></br>
+        Will you survive this first year? We are all counting on you!
+        You said data could save our company, let's see if you are up to the task.
       </Description>
       
       <CompanyCard>

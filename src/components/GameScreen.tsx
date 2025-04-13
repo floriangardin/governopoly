@@ -55,6 +55,8 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
   const emailTimerRef = useRef<NodeJS.Timeout | null>(null);
   const gameTimeRef = useRef<number>(0);
   const lastEmailTimeRef = useRef<number>(0);
+  const totalGameTime = 18000; // 3 minutes in milliseconds
+  const emailEvery = 7000;
 
   // Track urgent email timers
   const [urgentTimers, setUrgentTimers] = useState<{[emailId: string]: NodeJS.Timeout}>({});
@@ -66,7 +68,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
   const [timerTick, setTimerTick] = useState<number>(0);
   
   // Track remaining game time
-  const [remainingTime, setRemainingTime] = useState<number>(180); // 3 minutes in seconds
+  const [remainingTime, setRemainingTime] = useState<number>(totalGameTime / 1000); // 3 minutes in seconds
   
   // Available emails pool
   const [availableEmails, setAvailableEmails] = useState<Email[]>([]);
@@ -167,7 +169,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
       if (gameStarted) {
         // Calculate remaining time in seconds (180 seconds total)
         const timeElapsed = Math.floor(gameTimeRef.current / 1000);
-        const timeRemaining = Math.max(0, 180 - timeElapsed);
+        const timeRemaining = Math.max(0, totalGameTime / 1000 - timeElapsed);
         setRemainingTime(timeRemaining);
       }
     }, 100);
@@ -250,6 +252,21 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
     // Create a separate interval for emails to avoid interference with the timer
     const gameInterval = setInterval(() => {
       gameTimeRef.current += 100; // 100ms tick
+
+      // Check if we should display the 'new_1' email
+      // This is a special email that should be shown at a specific time
+      const new1Email = availableEmails.find(email => email.id === 'new_1');
+      if (new1Email && gameTimeRef.current > 1000) { // Show after 2 seconds of gameplay
+        // Add to inbox
+        setInbox(prev => [...prev, new1Email]);
+        // Play notification sound
+        playEmailNotification();
+        // Remove from available pool
+        setAvailableEmails(prev => prev.filter(e => e.id !== 'new_1'));
+        // Update last email time
+        lastEmailTimeRef.current = gameTimeRef.current;
+        return;
+      }
       
       // Check for burnout (too many emails)
       if (inbox.length >= maxEmails) {
@@ -276,7 +293,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
       
       // Add regular emails regardless of urgent status
       const timeSinceLastEmail = gameTimeRef.current - lastEmailTimeRef.current;
-      if (timeSinceLastEmail > 7000 + Math.random() * 3000) { // 7-10 seconds interval
+      if (timeSinceLastEmail > emailEvery + Math.random() * 3000) { // 7-10 seconds interval
         // Randomly select an email to add (prioritize non-urgent for regular additions)
         const nonUrgentEmails = availableEmails.filter(email => !email.isUrgent);
         
@@ -298,7 +315,8 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
               ...email,
               content: email.content.replace(/GlobalTech Innovations/g, companyContext.name)
             }));
-            setAvailableEmails(allEmails);
+            // Remove new_1 id from available emails
+            setAvailableEmails(allEmails.filter(email => email.id !== 'new_1'));
           }
           
           // Update last email time
@@ -308,7 +326,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
       
       // Occasionally add an urgent email (about every 30-45 seconds)
       // Only add a new urgent if there isn't already one in progress
-      if (Math.random() < 0.05) { // 0.3% chance per 100ms = approx every 33 seconds
+      if (Math.random() < 0.008) { // 0.3% chance per 100ms = approx every 33 seconds
         const urgentEmails = availableEmails.filter(email => email.isUrgent);
         
         if (urgentEmails.length > 0) {
@@ -330,7 +348,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
       }
       
       // Check for victory after 3 minutes of successful play
-      if (gameTimeRef.current >= 180000) {
+      if (gameTimeRef.current >= totalGameTime) {
         clearInterval(gameInterval);
         clearUrgentEmails();
         onGameVictory({

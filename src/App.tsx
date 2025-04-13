@@ -15,7 +15,7 @@ export type DefeatReason = 'budget' | 'dataQuality' | 'reputation' | 'burnout' |
 
 // Company context to be used throughout the game
 export const companyContext = {
-  name: "Nine Lives insurances.",
+  name: "Nine Lives insurance.",
   industry: "Insurance",
   employees: 1000,
   revenue: "$1.2 billion",
