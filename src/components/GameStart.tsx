@@ -94,18 +94,17 @@ const GameStart: React.FC<GameStartProps> = ({ onStart, companyContext }) => {
       {audioError && <AudioMessage>{audioError}</AudioMessage>}
       
       <HeaderContainer>
-        <Title>Nine Lives</Title>
+        <Title>Governopoly</Title>
         <MusicButton onClick={toggleMusic}>
           {isMusicPlaying ? '🔊' : '🔇'}
         </MusicButton>
       </HeaderContainer>
-      <Subtitle>Survive the storm of digital leadership</Subtitle>
+      <Subtitle>Beat the last CDO</Subtitle>
       
       <Description>
-        Welcome to {companyContext.name}, I'm pleased that you are taking the challenge of being our new Chief Data Officer (CDO).
-        <br></br><br></br>
-        Will you survive this first year? We are all counting on you!
-        You said data could save our company, let's see if you are up to the task.
+        Welcome to {companyContext.name} I'm pleased that you are taking the challenge of being our new Chief Data Officer (CDO).
+        <br></br>
+        You said data could save our company ? let's see if you are up to the task, you have one year !
       </Description>
       
       <CompanyCard>
@@ -118,48 +117,15 @@ const GameStart: React.FC<GameStartProps> = ({ onStart, companyContext }) => {
           {companyContext.description}
         </CompanyDescription>
         
-        <CompanyStats>
-          <StatItem>
-            <StatLabel>Industry</StatLabel>
-            <StatValue>{companyContext.industry}</StatValue>
-          </StatItem>
-          <StatItem>
-            <StatLabel>Founded</StatLabel>
-            <StatValue>{companyContext.founded}</StatValue>
-          </StatItem>
-          <StatItem>
-            <StatLabel>Headquarters</StatLabel>
-            <StatValue>{companyContext.headquarters}</StatValue>
-          </StatItem>
-          <StatItem>
-            <StatLabel>Employees</StatLabel>
-            <StatValue>{formatNumber(companyContext.employees)}</StatValue>
-          </StatItem>
-          <StatItem>
-            <StatLabel>Annual Revenue</StatLabel>
-            <StatValue>{companyContext.revenue}</StatValue>
-          </StatItem>
-          <StatItem>
-            <StatLabel>Data Team Size</StatLabel>
-            <StatValue>{companyContext.dataTeamSize} people</StatValue>
-          </StatItem>
-        </CompanyStats>
+        
       </CompanyCard>
-      
-      <Description>
-        As CDO, you'll face real-world challenges around data privacy, management, 
-        security breaches, compliance regulations, and stakeholder management across
-        {companyContext.employees} employees. Every decision counts!
-      </Description>
       
       <YourRole>
         <RoleTitle>Your Role as Chief Data Officer</RoleTitle>
         <RoleDescription>
-          You've just been appointed as the CDO of {companyContext.name}. The board has high 
-          expectations for how you'll transform the organization's data practices. You'll 
-          need to balance technical considerations with business needs, manage a team of 
-          {companyContext.dataTeamSize} data professionals, and navigate complex stakeholder 
-          relationships.
+        As CDO, you'll face real-world challenges around data privacy, management, 
+        security breaches, compliance regulations, and stakeholder management across {companyContext.employees} employees. Every decision counts!
+        The last CDO didn't make it past the first year, will you ? 
         </RoleDescription>
       </YourRole>
       
@@ -167,17 +133,6 @@ const GameStart: React.FC<GameStartProps> = ({ onStart, companyContext }) => {
         Start Your CDO Journey
       </StartButton>
       
-      <Rules>
-        <h3>Game Rules:</h3>
-        <ul>
-          <li>You start with $1,000,000 in CDO budget allocation</li>
-          <li>Each decision affects your CDO budget, company profit, data quality, and reputation</li>
-          <li>The game lasts for 12 months (turns)</li>
-          <li>Your goal is to maximize company profit by the end of the year</li>
-          <li>If your data quality, reputation, or budget reaches zero, you'll be fired</li>
-          <li>Poor decisions can result in regulatory fines, PR disasters, or inefficiencies</li>
-        </ul>
-      </Rules>
     </Container>
   );
 };
@@ -261,6 +216,7 @@ const CompanyDescription = styled.p`
   font-size: 16px;
   line-height: 1.5;
   color: #5f6368;
+  text-align: center;
   margin-bottom: 20px;
 `;
 
