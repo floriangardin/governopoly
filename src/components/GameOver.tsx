@@ -105,7 +105,7 @@ const GameOver: React.FC<GameOverProps> = ({ stats, onRestart, companyContext })
       <Title>Year End Results</Title>
       
       <ScoreCard>
-        <CompanyLogo>{companyContext.name.charAt(0)}</CompanyLogo>
+        <CompanyLogoImage src="/logo.png" alt={`${companyContext.name} logo`} />
         <CompanyName>{companyContext.name}</CompanyName>
         
         <ScoreGrid>
@@ -203,18 +203,20 @@ const ScoreCard = styled.div`
 `;
 
 const CompanyLogo = styled.div`
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   background-color: #35adb6;
   color: white;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
+  font-size: 24px;
   font-weight: bold;
-  margin-bottom: 10px;
+  margin-right: 15px;
 `;
+
+
 
 const CompanyName = styled.div`
   font-size: 22px;
@@ -240,6 +242,15 @@ const ScoreItem = styled.div`
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 `;
+
+
+const CompanyLogoImage = styled.img`
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin-right: 15px;
+`;
+
 
 const ScoreLabel = styled.div`
   font-size: 14px;

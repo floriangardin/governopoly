@@ -2,7 +2,7 @@ import { Email } from '../../types/Email';
 
 const HREmails: Email[] = [
   {
-    id: 'hr_1',
+    id: 'new_1',
     sender: 'HR Director',
     title: 'Data Team Restructuring Proposal',
     content: `With our expanding data initiatives, the HR team has developed three options for restructuring our data organization. We need your recommendation on the best approach to support our strategic goals.
