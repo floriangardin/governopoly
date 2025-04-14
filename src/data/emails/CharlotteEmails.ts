@@ -12,6 +12,8 @@ Options:
 2. Continue monitoring while our team investigates the extent of the breach
 3. Notify affected customers immediately while investigation continues`,
     category: 'dataBreach',
+    minimumReputation: 50,
+    maximumDataQuality: 50,
     isUrgent: true,
     choices: [
       {
@@ -32,8 +34,8 @@ Options:
           description: 'The continued monitoring revealed it was a false alarm triggered by a new analytics tool. Your measured approach avoided unnecessary disruption.',
           budgetImpact: -200000,
           profitImpact: 0,
-          dataQualityImpact: -5,
-          reputationImpact: -10
+          dataQualityImpact: -15,
+          reputationImpact: -20
         }
       },
       {
@@ -60,6 +62,8 @@ Options:
 2. Quietly notify only affected employees while completing the investigation
 3. Delay all notifications for 48 hours until we have complete information`,
     category: 'dataBreach',
+    minimumReputation: 35,
+    maximumDataQuality: 30,
     isUrgent: true,
     choices: [
       {
@@ -69,8 +73,8 @@ Options:
           description: 'Your rapid and transparent response earned praise from privacy advocates and regulators. While there was short-term negative press, the long-term damage to company reputation was minimized.',
           budgetImpact: -150000,
           profitImpact: -150000,
-          dataQualityImpact: -10,
-          reputationImpact: -10
+          dataQualityImpact: 0,
+          reputationImpact: -20
         }
       },
       {
@@ -80,7 +84,7 @@ Options:
           description: 'Your targeted approach contained initial panic, but a whistleblower leaked the breach to the press, causing accusations of a cover-up. The controlled initial response was overshadowed by the perception of secrecy.',
           budgetImpact: -40000,
           profitImpact: -300000,
-          dataQualityImpact: -5,
+          dataQualityImpact: 0,
           reputationImpact: -30
         }
       },
@@ -90,8 +94,8 @@ Options:
         outcome: {
           description: 'The delay allowed your team to develop a comprehensive response, but it violated regulatory requirements for timely notification. The company faces potential fines for the delayed reporting.',
           budgetImpact: -100000,
-          profitImpact: -400000,
-          dataQualityImpact: -10,
+          profitImpact: -500000,
+          dataQualityImpact: 0,
           reputationImpact: -15
         }
       }
@@ -108,6 +112,8 @@ Options:
 2. Take control of the response and notification process ourselves
 3. Collaborate with the vendor on a joint response strategy`,
     category: 'dataBreach',
+    minimumReputation: 0,
+    maximumDataQuality: 20,
     isUrgent: true,
     choices: [
       {
@@ -117,7 +123,7 @@ Options:
           description: "The vendor's poor communication and slow response reflected badly on your company. Customers are angry that you attempted to shift responsibility, and regulators question your vendor management practices.",
           budgetImpact: 0,
           profitImpact: -400000,
-          dataQualityImpact: -10,
+          dataQualityImpact: 0,
           reputationImpact: -30
         }
       },
@@ -128,7 +134,7 @@ Options:
           description: 'Your proactive approach demonstrated strong customer focus but increased costs substantially. The vendor has agreed to partial cost reimbursement, but the incident has strained the relationship.',
           budgetImpact: -150000,
           profitImpact: -200000,
-          dataQualityImpact: -10,
+          dataQualityImpact: 0,
           reputationImpact: -10
         }
       },
@@ -139,8 +145,8 @@ Options:
           description: 'The collaborative approach balanced responsibilities effectively. Customers appreciated the unified and comprehensive response, while costs were shared appropriately between both companies.',
           budgetImpact: -300000,
           profitImpact: -100000,
-          dataQualityImpact: 5,
-          reputationImpact: 10
+          dataQualityImpact: 0,
+          reputationImpact: -5
         }
       }
     ]
@@ -156,6 +162,8 @@ Options:
 2. Refuse payment and restore from backups
 3. Engage a cybersecurity firm for negotiation and forensic assistance`,
     category: 'dataBreach',
+    minimumReputation: 40,
+    maximumDataQuality: 20,
     isUrgent: true,
     choices: [
       {
@@ -164,9 +172,9 @@ Options:
         outcome: {
           description: 'Payment was made, but only 70% of the data was successfully decrypted. The incident has attracted regulatory attention about your security practices, and there are concerns that paying may encourage future attacks.',
           budgetImpact: -500000,
-          profitImpact: -300000,
-          dataQualityImpact: -20,
-          reputationImpact: -40
+          profitImpact: 0,
+          dataQualityImpact: 0,
+          reputationImpact: -30
         }
       },
       {
@@ -176,7 +184,7 @@ Options:
           description: 'The restoration process was successful but took longer than expected. Business operations were impacted, but your firm stance against ransom payments was viewed positively by the board and industry peers.',
           budgetImpact: -100000,
           profitImpact: -200000,
-          dataQualityImpact: -10,
+          dataQualityImpact: 0,
           reputationImpact: -10
         }
       },
@@ -201,6 +209,8 @@ Options:
   content: "Dear CDO, Welcome to our company. As you know, our current data challenges are a big concern for the board. We've been working on a new strategy to improve our data situation, and we'd love your input. What's your first move?",
 
   category: "strategy",
+  minimumReputation: 0,
+  maximumDataQuality: 100,
   isUrgent: false,
   choices: [
     {
@@ -233,7 +243,7 @@ Options:
         budgetImpact: 0,
         profitImpact: 50000,
         dataQualityImpact: 5,
-        reputationImpact: -5
+        reputationImpact: 0
       }
     }
   ]
@@ -245,7 +255,9 @@ Options:
   title: "Need Your Input: First Hire",
   content: "We’ve budgeted for your first data hire. Do you want a data engineer, analyst, or governance expert?",
   category: "hr",
-  isUrgent: true,
+  minimumReputation: 0,
+  maximumDataQuality: 100,
+  isUrgent: false,
   choices: [
     {
       id: 1,
@@ -255,7 +267,7 @@ Options:
         budgetImpact: -150000,
         profitImpact: 200000,
         dataQualityImpact: 10,
-        reputationImpact: -10
+        reputationImpact: -5
       }
     },
     {
@@ -277,7 +289,7 @@ Options:
         budgetImpact: -200000,
         profitImpact: 100000,
         dataQualityImpact: 10,
-        reputationImpact: 10
+        reputationImpact: 5
       }
     }
   ]
@@ -295,6 +307,8 @@ Options:
 2. Federated model: Core data team plus embedded analysts in each department
 3. Guild model: Data professionals stay in their departments but form a cross-functional community`,
   category: 'hr',
+  minimumReputation: 40,
+  maximumDataQuality: 100,
   isUrgent: false,
   choices: [
     {
@@ -304,7 +318,7 @@ Options:
         description: 'The centralized structure improved standardization and collaboration among data professionals. However, some business units feel the central team is less responsive to their specific needs.',
         budgetImpact: -100000,
         profitImpact: 300000,
-        dataQualityImpact: 15,
+        dataQualityImpact: 5,
         reputationImpact: -10
       }
     },
@@ -343,6 +357,8 @@ Options:
 2. Develop an internal talent pipeline with training and promotion paths
 3. Partner with universities to create a specialized recruiting program`,
   category: 'hr',
+  minimumReputation: 60,
+  maximumDataQuality: 100,
   isUrgent: false,
   choices: [
     {
@@ -351,7 +367,7 @@ Options:
       outcome: {
         description: 'The salary increases successfully attracted several highly qualified candidates, filling critical roles quickly. However, it created internal equity issues with existing employees requesting similar adjustments.',
         budgetImpact: -500000,
-        profitImpact: 500000,
+        profitImpact: 700000,
         dataQualityImpact: 10,
         reputationImpact: -10
       }
@@ -361,9 +377,9 @@ Options:
       text: 'Develop internal talent pipeline',
       outcome: {
         description: 'The internal development program took time to show results but created strong loyalty and retention. Several promising employees have grown into their new roles and bring valuable institutional knowledge.',
-        budgetImpact: -150000,
-        profitImpact: 300000,
-        dataQualityImpact: 10,
+        budgetImpact: -250000,
+        profitImpact: 500000,
+        dataQualityImpact: -10,
         reputationImpact: 15
       }
     },
@@ -372,9 +388,9 @@ Options:
       text: 'Partner with universities',
       outcome: {
         description: 'The university partnership created a steady pipeline of entry-level talent but didn\'t address immediate senior-level needs. The program has enhanced your company\'s reputation in the academic community.',
-        budgetImpact: -80000,
+        budgetImpact: -40000,
         profitImpact: 100000,
-        dataQualityImpact: 0,
+        dataQualityImpact: -10,
         reputationImpact: 5
       }
     }
@@ -391,6 +407,8 @@ Options:
 2. Hire additional staff to reduce workload pressure
 3. Conduct a work prioritization exercise to eliminate low-value tasks`,
   category: 'hr',
+  minimumReputation: 40,
+  maximumDataQuality: 100,
   isUrgent: false,
   choices: [
     {
@@ -420,9 +438,9 @@ Options:
       text: 'Conduct work prioritization exercise',
       outcome: {
         description: 'The exercise eliminated several unnecessary reports and processes, freeing up capacity. Teams appreciated the focus on high-value work, though some stakeholders were unhappy about discontinued deliverables.',
-        budgetImpact: -30000,
+        budgetImpact: -50000,
         profitImpact: 150000,
-        dataQualityImpact: 5,
+        dataQualityImpact: -5,
         reputationImpact: -5
       }
     }
@@ -439,6 +457,8 @@ Options:
 2. Role-based training tailored to different job functions
 3. Self-paced online learning with optional certification`,
   category: 'hr',
+  minimumReputation: 80,
+  maximumDataQuality: 100,
   isUrgent: false,
   choices: [
     {
@@ -446,10 +466,10 @@ Options:
       text: 'Implement mandatory data literacy training',
       outcome: {
         description: 'The universal training created a common data vocabulary across the organization. Though initially resisted by some departments, it has improved cross-functional collaboration on data-driven initiatives.',
-        budgetImpact: -200000,
-        profitImpact: 300000,
+        budgetImpact: -250000,
+        profitImpact: 700000,
         dataQualityImpact: 5,
-        reputationImpact: 3
+        reputationImpact: 10
       }
     },
     {
@@ -457,10 +477,10 @@ Options:
       text: 'Implement role-based data training',
       outcome: {
         description: 'The tailored approach delivered relevant skills to each role, increasing adoption and practical application. Employees appreciated the customized content that directly applied to their daily work.',
-        budgetImpact: -500000,
-        profitImpact: 600000,
+        budgetImpact: -600000,
+        profitImpact: 900000,
         dataQualityImpact: 15,
-        reputationImpact: 10
+        reputationImpact: 15
       }
     },
     {
@@ -469,9 +489,9 @@ Options:
       outcome: {
         description: 'The flexible approach was cost-effective but had mixed adoption. Motivated employees gained valuable skills, while others didn\'t prioritize the optional training, creating uneven data literacy across teams.',
         budgetImpact: -100000,
-        profitImpact: 150000,
-        dataQualityImpact: 5,
-        reputationImpact: -3
+        profitImpact: 500000,
+        dataQualityImpact: 0,
+        reputationImpact: -5
       }
     }
   ]
@@ -485,6 +505,8 @@ const BudgetEmails: Email[] = [
   title: "Funds for Modern Data Stack",
   content: "To scale our data efforts, you recommended investing in a modern data stack (warehouse, ELT, governance tools). Here are some proprosal for additional budget :",
   category: "budget",
+  minimumReputation: 20,
+  maximumDataQuality: 100,
   isUrgent: false,
   choices: [
     {
@@ -494,7 +516,7 @@ const BudgetEmails: Email[] = [
         description: "You get full budget for high-performance systems, but profit are not there yet.",
         budgetImpact: 600000,
         profitImpact: 0,
-        dataQualityImpact: 10,
+        dataQualityImpact: 0,
         reputationImpact: 0
       }
     },
@@ -505,7 +527,7 @@ const BudgetEmails: Email[] = [
         description: "You gain support for a smart rollout plan.",
         budgetImpact: 300000,
         profitImpact: 200000,
-        dataQualityImpact: 5,
+        dataQualityImpact: 0,
         reputationImpact: 0
       }
     },
@@ -516,8 +538,54 @@ const BudgetEmails: Email[] = [
         description: "You save data quality now, but innovation stalls.",
         budgetImpact: 100000,
         profitImpact: 100000,
-        dataQualityImpact: 0,
-        reputationImpact: -10
+        dataQualityImpact: 10,
+        reputationImpact: 0
+      }
+    }
+  ]
+}
+,
+{
+  id: "email-010",
+  sender: "ceo@ninelives.io",
+  title: "Approved: Emergency Budget to Start",
+  content: "I’m releasing emergency funds—you decide how to spend them. Let’s not lose momentum.",
+  category: "budget",
+  minimumReputation: 10,
+  maximumDataQuality: 100,
+  isUrgent: false,
+  choices: [
+    {
+      id: 1,
+      text: "Hire a specialized firm to audit everything",
+      outcome: {
+        description: "You discover existing state and plan good decisions.",
+        budgetImpact: 200000,
+        profitImpact: 0,
+        dataQualityImpact: 5,
+        reputationImpact: 0
+      }
+    },
+    {
+      id: 2,
+      text: "Handle audit in-house with your team",
+      outcome: {
+        description: "Partial knowledge gathered, team is discovering data quality.",
+        budgetImpact: 100000,
+        profitImpact: 0,
+        dataQualityImpact: 10,
+        reputationImpact: 0
+      }
+    },
+    {
+      id: 3,
+      text: "Skip audit, launch data quick wins",
+      outcome: {
+        description: "Quick and cheap, but start cleaning right now.",
+        budgetImpact: 50000,
+        profitImpact: 0,
+        dataQualityImpact: 20,
+        reputationImpact: -5
       }
     }
   ]
@@ -529,6 +597,8 @@ const BudgetEmails: Email[] = [
   title: "Budget Unlocked: Time to Build Our AI Future",
   content: "We’ve hit a growth milestone, and it’s time to use data to get predictive. I’ve carved out funds for you to lead our AI push—forecasting, personalization, the works. Run with it.",
   category: "budget",
+  minimumReputation: 60,
+  maximumDataQuality: 100,
   isUrgent: false,
   choices: [
     {
@@ -539,7 +609,7 @@ const BudgetEmails: Email[] = [
         budgetImpact: 500000,
         profitImpact: 400000,
         dataQualityImpact: 5,
-        reputationImpact: 10
+        reputationImpact: 0
       }
     },
     {
@@ -548,9 +618,9 @@ const BudgetEmails: Email[] = [
       outcome: {
         description: "You make a solid case for scaling with real results.",
         budgetImpact: 400000,
-        profitImpact: 600000,
+        profitImpact: 300000,
         dataQualityImpact: 5,
-        reputationImpact: 5
+        reputationImpact: 0
       }
     },
     {
@@ -559,9 +629,9 @@ const BudgetEmails: Email[] = [
       outcome: {
         description: "Safe route, but we risk falling behind.",
         budgetImpact: 100000,
-        profitImpact: 200000,
-        dataQualityImpact: 15,
-        reputationImpact: -5
+        profitImpact: 500000,
+        dataQualityImpact: 0,
+        reputationImpact: 0
       }
     }
   ]
@@ -572,7 +642,9 @@ const BudgetEmails: Email[] = [
   sender: "ceo@ninelives.io",
   title: "Budget Approved: Keep Modernizing Our Data Infrastructure",
   content: "Thanks to your team’s foundational work, we’re in a strong position to upgrade our data systems. I’ve approved additional budget to help you modernize our claims, underwriting, and risk data pipelines. Choose your path.",
-  category: "strategy",
+  category: "budget",
+  minimumReputation: 50,
+  maximumDataQuality: 100,
   isUrgent: false,
   choices: [
     {
@@ -583,7 +655,7 @@ const BudgetEmails: Email[] = [
         budgetImpact: 500000,
         profitImpact: 100000,
         dataQualityImpact: -10,
-        reputationImpact: 5
+        reputationImpact: 0
       }
     },
     {
@@ -594,7 +666,7 @@ const BudgetEmails: Email[] = [
         budgetImpact: 300000,
         profitImpact: 200000,
         dataQualityImpact: 10,
-        reputationImpact: 10
+        reputationImpact: 0
       }
     },
     {
@@ -605,7 +677,7 @@ const BudgetEmails: Email[] = [
         budgetImpact: 150000,
         profitImpact: 50000,
         dataQualityImpact: 25,
-        reputationImpact: -10
+        reputationImpact: 0
       }
     }
   ]
@@ -616,18 +688,20 @@ const BudgetEmails: Email[] = [
   sender: "ceo@ninelives.io",
   title: "Budget Released for Our Claims and Risk Data",
   content: "With increasing data usage across underwriting and claims, we need to secure our systems. I’ve released additional funds to strengthen data recovery and backup : your move on how to use them.",
-  category: "dataQuality",
+  category: "budget",
+  minimumReputation: 80,
+  maximumDataQuality: 100,
   isUrgent: false,
   choices: [
     {
       id: 1,
       text: "Partner with a dedicated disaster recovery vendor",
       outcome: {
-        description: "Claims and risk data are fully protected with industry-best SLAs. Internal team doesn't like it though.",
+        description: "Claims and risk data are fully protected with industry-best SLAs.",
         budgetImpact: 500000,
         profitImpact: 300000,
         dataQualityImpact: -10,
-        reputationImpact: -20
+        reputationImpact: 0
       }
     },
     {
@@ -661,6 +735,8 @@ const BudgetEmails: Email[] = [
   title: "Cloud Growth Means Bigger Storage – You're Funded",
   content: "Our data volume is a good sign—it means we're scaling fast. I've approved extra storage budget. Let’s make sure performance keeps up with ambition.",
   category: "budget",
+  minimumReputation: 30,
+  maximumDataQuality: 100,
   isUrgent: false,
   choices: [
     {
@@ -671,7 +747,7 @@ const BudgetEmails: Email[] = [
         budgetImpact: 300000,
         profitImpact: 0,
         dataQualityImpact: -10,
-        reputationImpact: 5
+        reputationImpact: 0
       }
     },
     {
@@ -682,7 +758,7 @@ const BudgetEmails: Email[] = [
         budgetImpact: 200000,
         profitImpact: 0,
         dataQualityImpact: 5,
-        reputationImpact: 10
+        reputationImpact: 0
       }
     },
     {
@@ -693,7 +769,7 @@ const BudgetEmails: Email[] = [
         budgetImpact: 100000,
         profitImpact: 0,
         dataQualityImpact: 15,
-        reputationImpact: -10
+        reputationImpact: 0
       }
     }
   ]
@@ -705,6 +781,8 @@ const BudgetEmails: Email[] = [
   title: "Let’s Empower Everyone With Data",
   content: "We're growing fast—and to keep up, everyone needs to speak data. I’m unlocking funds for your data literacy initiative. Let’s build a culture of data fluency together.",
   category: "budget",
+  minimumReputation: 80,
+  maximumDataQuality: 100,
   isUrgent: false,
   choices: [
     {
@@ -712,10 +790,10 @@ const BudgetEmails: Email[] = [
       text: "Bring in external experts for company-wide training",
       outcome: {
         description: "People across departments are excited and empowered.",
-        budgetImpact: 400000,
+        budgetImpact: 600000,
         profitImpact: 250000,
         dataQualityImpact: 5,
-        reputationImpact: 5
+        reputationImpact: 0
       }
     },
     {
@@ -723,7 +801,7 @@ const BudgetEmails: Email[] = [
       text: "Create tailored internal workshops",
       outcome: {
         description: "Your team builds capacity over time at lower cost.",
-        budgetImpact: 200000,
+        budgetImpact: 250000,
         profitImpact: 400000,
         dataQualityImpact: 2,
         reputationImpact: 0
@@ -737,7 +815,7 @@ const BudgetEmails: Email[] = [
         budgetImpact: 50000,
         profitImpact: 100000,
         dataQualityImpact: 10,
-        reputationImpact: -10
+        reputationImpact: 0
       }
     }
   ]
@@ -756,6 +834,8 @@ const BudgetEmails: Email[] = [
   2. Delay the quarterly report to conduct a thorough data quality audit
   3. Use statistical methods to estimate correct figures where data is questionable`,
       category: 'dataQuality',
+      minimumReputation: 0,
+      maximumDataQuality: 80,
       isUrgent: false,
       choices: [
         {
@@ -804,6 +884,8 @@ const BudgetEmails: Email[] = [
   2. Create a data stewardship program with assigned owners for customer data
   3. Implement automated data quality rules for all incoming customer data`,
       category: 'dataQuality',
+      minimumReputation: 0,
+      maximumDataQuality: 60,
       isUrgent: false,
       choices: [
         {
@@ -834,9 +916,9 @@ const BudgetEmails: Email[] = [
           outcome: {
             description: 'The automated system caught many issues at the point of entry, preventing further data deterioration. However, historical data issues remain, and some valid but unusual customer scenarios were incorrectly flagged as errors.',
             budgetImpact: -100000,
-            profitImpact: 200000,
-            dataQualityImpact: 5,
-            reputationImpact: 10
+            profitImpact: 250000,
+            dataQualityImpact: 20,
+            reputationImpact: -10
           }
         }
       ]
@@ -852,6 +934,8 @@ const BudgetEmails: Email[] = [
   2. Conduct user research to complement the incomplete data
   3. Rebuild the entire analytics pipeline with more robust logging`,
       category: 'dataQuality',
+      minimumReputation: 0,
+      maximumDataQuality: 50,
       isUrgent: false,
       choices: [
         {
@@ -900,6 +984,8 @@ const BudgetEmails: Email[] = [
   2. Fix issues in place with an emergency data quality task force
   3. Implement circuit-breaker logic to quarantine suspicious data automatically`,
       category: 'dataQuality',
+      minimumReputation: 0,
+      maximumDataQuality: 40,
       isUrgent: true,
       choices: [
         {
@@ -951,6 +1037,8 @@ const BudgetEmails: Email[] = [
   2. Risk-based approach focusing only on high and medium severity issues
   3. Minimal compliance approach addressing only the critical findings`,
       category: 'gdpr',
+      minimumReputation: 0,
+      maximumDataQuality: 100,
       isUrgent: true,
       choices: [
         {
@@ -999,6 +1087,8 @@ const BudgetEmails: Email[] = [
   2. Temporarily reassign staff from other projects to clear the backlog
   3. Outsource SAR processing to a specialized legal service provider`,
       category: 'gdpr',
+      minimumReputation: 0,
+      maximumDataQuality: 80,
       isUrgent: true,
       choices: [
         {
@@ -1047,6 +1137,8 @@ const BudgetEmails: Email[] = [
   2. Relocate European data processing to EU-based data centers
   3. Restructure data systems to keep EU data entirely within the EU`,
       category: 'gdpr',
+      minimumReputation: 0,
+      maximumDataQuality: 100,
       isUrgent: false,
       choices: [
         {
@@ -1055,7 +1147,7 @@ const BudgetEmails: Email[] = [
           outcome: {
             description: 'The updated contracts provided a temporary solution, but legal uncertainties remain. Some privacy-focused customers have expressed concerns about the adequacy of these measures.',
             budgetImpact: -100000,
-            profitImpact: -50000,
+            profitImpact: 50000,
             dataQualityImpact: -5,
             reputationImpact: -5
           }
@@ -1065,7 +1157,7 @@ const BudgetEmails: Email[] = [
           text: 'Relocate to EU-based data centers',
           outcome: {
             description: 'The new EU data centers satisfied regulatory requirements and customer concerns. Despite high initial costs, the infrastructure investment improved performance for European users and opened new market opportunities.',
-            budgetImpact: -300000,
+            budgetImpact: -350000,
             profitImpact: 200000,
             dataQualityImpact: 5,
             reputationImpact: 15
@@ -1078,8 +1170,8 @@ const BudgetEmails: Email[] = [
             description: 'The comprehensive data localization strategy created a future-proof compliance framework. The approach has been praised by regulators and privacy advocates, though it created some operational complexity.',
             budgetImpact: -200000,
             profitImpact: 100000,
-            dataQualityImpact: 10,
-            reputationImpact: 20
+            dataQualityImpact: 5,
+            reputationImpact: 5
           }
         }
       ]
@@ -1095,6 +1187,8 @@ const BudgetEmails: Email[] = [
   2. Adopt a legitimate interest basis for certain communications
   3. Restrict marketing to only customers with clear, recent consent`,
       category: 'gdpr',
+      minimumReputation: 0,
+      maximumDataQuality: 80,
       isUrgent: false,
       choices: [
         {
@@ -1146,6 +1240,8 @@ const BudgetEmails: Email[] = [
   2. Apply existing industry standards and guidelines without customization
   3. Focus narrowly on bias prevention and explainability requirements`,
       category: 'misc',
+      minimumReputation: 0,
+      maximumDataQuality: 100,
       isUrgent: false,
       choices: [
         {
@@ -1194,6 +1290,8 @@ const BudgetEmails: Email[] = [
   2. Provide training on existing systems and create detailed access guides
   3. Establish a dedicated data support team to assist with complex queries`,
       category: 'misc',
+      minimumReputation: 0,
+      maximumDataQuality: 100,
       isUrgent: false,
       choices: [
         {
@@ -1242,6 +1340,8 @@ const BudgetEmails: Email[] = [
   2. Organize a moderate internal hackathon with focused business challenges
   3. Decline the hackathon in favor of a structured innovation process`,
       category: 'misc',
+      minimumReputation: 0,
+      maximumDataQuality: 100,
       isUrgent: false,
       choices: [
         {
@@ -1290,6 +1390,8 @@ const BudgetEmails: Email[] = [
   2. Submit a written statement highlighting our best practices
   3. Decline to comment for this story`,
       category: 'misc',
+      minimumReputation: 0,
+      maximumDataQuality: 100,
       isUrgent: true,
       choices: [
         {
@@ -1341,6 +1443,8 @@ const BudgetEmails: Email[] = [
   2. Prioritize data integration to create a unified customer view
   3. Invest in real-time data processing for operational excellence`,
       category: 'strategy',
+      minimumReputation: 0,
+      maximumDataQuality: 100,
       isUrgent: false,
       choices: [
         {
@@ -1350,8 +1454,8 @@ const BudgetEmails: Email[] = [
             description: "Your analytics focus has generated valuable business insights that competitors can't match. However, data integration challenges are limiting the scope of what can be analyzed.",
             budgetImpact: -300000,
             profitImpact: 400000,
-            dataQualityImpact: 5,
-            reputationImpact: 15
+            dataQualityImpact: -5,
+            reputationImpact: 5
           }
         },
         {
@@ -1372,7 +1476,7 @@ const BudgetEmails: Email[] = [
             description: 'Real-time capabilities have improved operational efficiency but required extensive system upgrades. The technology is impressive, though some departments struggle to adapt their processes to leverage it fully.',
             budgetImpact: -600000,
             profitImpact: 800000,
-            dataQualityImpact: -5,
+            dataQualityImpact: -15,
             reputationImpact: 5
           }
         }
@@ -1389,6 +1493,8 @@ const BudgetEmails: Email[] = [
   2. Develop APIs for partners to access select data with customer consent
   3. Focus internally on using data to improve existing products instead of monetization`,
       category: 'strategy',
+      minimumReputation: 50,
+      maximumDataQuality: 100,
       isUrgent: false,
       choices: [
         {
@@ -1437,6 +1543,8 @@ const BudgetEmails: Email[] = [
   2. Multi-cloud approach leveraging best-of-breed services
   3. Hybrid cloud-on-premise solution for sensitive data`,
       category: 'strategy',
+      minimumReputation: 30,
+      maximumDataQuality: 100,
       isUrgent: false,
       choices: [
         {
@@ -1485,6 +1593,8 @@ const BudgetEmails: Email[] = [
   2. Operational data initiatives to improve efficiency
   3. Risk and compliance data initiatives to reduce exposure`,
       category: 'strategy',
+      minimumReputation: 50,
+      maximumDataQuality: 100,
       isUrgent: false,
       choices: [
         {
