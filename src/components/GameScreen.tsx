@@ -28,8 +28,8 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
   const [cdoBudget, setCdoBudget] = useState(initialScore);
   const [companyProfit, setCompanyProfit] = useState(0);
   const [month, setMonth] = useState(initialMonth);
-  const [dataQuality, setDataQuality] = useState(50); // 0-100 scale
-  const [reputation, setReputation] = useState(50); // 0-100 scale
+  const [dataQuality, setDataQuality] = useState(0); // 0-100 scale
+  const [reputation, setReputation] = useState(0); // 0-100 scale
   const companyName = companyContext.name;
   const maxEmails = 7;
   // Audio ref for background music
@@ -56,7 +56,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
   const gameTimeRef = useRef<number>(0);
   const lastEmailTimeRef = useRef<number>(0);
   const totalGameTime = 180000; // 3 minutes in milliseconds
-  const emailEvery = 7000;
+  const emailEvery = 12000;
 
   // Track urgent email timers
   const [urgentTimers, setUrgentTimers] = useState<{[emailId: string]: NodeJS.Timeout}>({});
@@ -72,6 +72,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
   
   // Available emails pool
   const [availableEmails, setAvailableEmails] = useState<Email[]>([]);
+  
   
   // Play email notification sound
   const playEmailNotification = useCallback(() => {
@@ -270,6 +271,13 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
       if(gameTimeRef.current < 5000) {
         return;
       }
+
+      // Filter emails that are not available
+      const filterEmails = (emails: Email[]) => {
+        return emails.filter(x => (x.minimumReputation <= reputation) && (x.maximumDataQuality >= dataQuality))
+      }
+
+      const filteredAvailableEmails = filterEmails(availableEmails)
       
       // Check for burnout (too many emails)
       if (inbox.length >= maxEmails) {
@@ -288,7 +296,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
       const timeSinceLastEmail = gameTimeRef.current - lastEmailTimeRef.current;
       if (timeSinceLastEmail > emailEvery + Math.random() * 3000) { // 7-10 seconds interval
         // Randomly select an email to add (prioritize non-urgent for regular additions)
-        const nonUrgentEmails = availableEmails.filter(email => !email.isUrgent);
+        const nonUrgentEmails = filteredAvailableEmails.filter(email => !email.isUrgent);
         
         if (nonUrgentEmails.length > 0) {
           const randomIndex = Math.floor(Math.random() * nonUrgentEmails.length);
@@ -303,7 +311,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
           // Remove from available pool
           setAvailableEmails(prev => prev.filter(e => e.id !== emailToAdd.id));
           // If no available emails reset to all mails
-          if (availableEmails.length === 0) {
+          if (filteredAvailableEmails.length === 0) {
             const allEmails = getAllEmails().map(email => ({
               ...email,
               content: email.content.replace(/GlobalTech Innovations/g, companyContext.name)
@@ -320,7 +328,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
       // Occasionally add an urgent email (about every 30-45 seconds)
       // Only add a new urgent if there isn't already one in progress
       if (Math.random() < 0.005) { // 0.3% chance per 100ms = approx every 33 seconds
-        const urgentEmails = availableEmails.filter(email => email.isUrgent);
+        const urgentEmails = filteredAvailableEmails.filter(email => email.isUrgent);
         
         if (urgentEmails.length > 0) {
           const randomIndex = Math.floor(Math.random() * urgentEmails.length);
@@ -509,6 +517,11 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
   
   return (
     <Container>
+      {reputation <= 20 && (
+        <BudgetWarning>
+          💡 Increase your reputation (⭐) to receive more budget!
+        </BudgetWarning>
+      )}
       <Header>
         <StatusItem>
           <StatusLabel>💰 CDO Budget:</StatusLabel>
@@ -565,7 +578,12 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
                       <UrgentTimer>{getTimeRemaining(email.id)}s</UrgentTimer>
                     </UrgentIndicator>
                   )}
-                  <EmailTitle>{email.title}</EmailTitle>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <EmailTitle>{email.title}</EmailTitle>
+                    <EmailCategory category={email.category}>
+                      {email.category}
+                    </EmailCategory>
+                  </div>
                   <EmailSender>{email.sender}</EmailSender>
                   <EmailPreview>{getEmailPreview(email.content)}</EmailPreview>
                 </EmailItem>
@@ -688,18 +706,16 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
               )}
             </>
           ) : (
-            <EmptySelection >
+            <EmptySelection>
               <EmptyIcon>📧</EmptyIcon>
-              <EmptyMessage >Select an email from your inbox to respond</EmptyMessage>
+              <EmptyMessage>Select an email from your inbox to respond</EmptyMessage>
               <EmptyWarning style={{ border: '2px solid #cf5628', borderRadius: '8px', padding: '30px' }}>
                 <strong>⚠️ IMPORTANT ⚠️</strong><br />
-                • Your goal is to maximize the profit (📈) of the company <br />
-                • You have a budget to spend (💰), you need to have the money for each associated decision <br />
-                • You'll need minimal amount of data quality (📊) and reputation (⭐) to take the best decisions <br />
+                • Your goal is to maximize the profit (📈) of the company<br />
+                • You need a good reputation (⭐) to get more budget<br />
+                • You need good data quality (📊) to avoid issues<br />
                 • Urgent emails (🔴) must be answered within 10 seconds<br />
-                • If you accumulate {maxEmails} or more unanswered emails, you'll lose the game<br />
-                • The game lasts {Math.floor(totalGameTime / (1000 * 60))} minutes<br />
-
+                • If you accumulate 7 or more unanswered emails, you'll be burnout !
               </EmptyWarning>
               {!gameStarted && (
                 <StartButton onClick={handleStartGame}>
@@ -1186,6 +1202,36 @@ const TimeDisplay = styled.div<{gameStarted: boolean}>`
   font-size: 16px;
   font-weight: bold;
   color: ${props => props.gameStarted && props.children === '0:00' ? '#cf5628' : '#3c4043'};
+`;
+
+const EmailCategory = styled.span<{ category: string }>`
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  margin-left: 8px;
+  background: ${props => {
+    switch (props.category.toLowerCase()) {
+      case 'budget': return '#f3ad41';    // Orange
+      case 'databreach': return '#cf5628'; // Red
+      case 'dataquality': return '#35adb6'; // Same blue as the indicator
+      case 'gdpr': return '#7c4dff';      // Purple
+      case 'hr': return '#43a047';        // Green
+      case 'misc': return '#607d8b';      // Blue Grey
+      default: return '#5f6368';
+    }
+  }};
+  color: white;
+  text-transform: uppercase;
+  font-weight: 500;
+`;
+
+const BudgetWarning = styled.div`
+  background-color: #cf5628;
+  color: white;
+  text-align: center;
+  padding: 8px;
+  font-size: 14px;
+  font-weight: 500;
 `;
 
 export default GameScreen; 

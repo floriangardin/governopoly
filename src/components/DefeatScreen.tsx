@@ -252,9 +252,9 @@ const RestartButton = styled.button`
 const ShareButton = styled.button`
   background: #f3ad41;
   color: white;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
-  padding: 15px 30px;
+  padding: 12px 24px;
   border: none;
   border-radius: 6px;
   cursor: pointer;

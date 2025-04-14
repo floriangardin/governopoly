@@ -6,6 +6,9 @@ export interface Email {
   category: 'dataBreach' | 'dataQuality' | 'hr' | 'strategy' | 'gdpr' | 'misc' | 'budget';
   isUrgent: boolean;
   choices: Choice[];
+  maximumDataQuality: number;
+  minimumReputation: number;
+  
 }
 
 export interface Choice {

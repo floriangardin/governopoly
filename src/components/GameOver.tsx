@@ -30,17 +30,17 @@ const formatCurrency = (amount: number): string => {
 };
 
 const getFeedback = (cdoBudget: number, companyProfit: number, company: GameOverProps['companyContext']): { title: string; message: string } => {
-  if (companyProfit >= 15000000) {
+  if (companyProfit >= 10000000) {
     return {
       title: "Outstanding CDO Performance!",
       message: `You have masterfully balanced data governance with business needs at ${company.name}. The board is impressed with your strategic vision and leadership. You've set the gold standard for data governance in the ${company.industry} industry!`
     };
-  } else if (companyProfit >= 10000000) {
+  } else if (companyProfit >= 7000000) {
     return {
       title: "Excellent Job!",
       message: `You have significantly improved ${company.name}'s data practices while maintaining profitability. Your strategic decisions have paid off, making you one of the most respected CDOs in the ${company.industry} sector!`
     };
-  } else if (companyProfit >= 6000000) {
+  } else if (companyProfit >= 5000000) {
     return {
       title: "Solid Performance",
       message: `You've managed to navigate the challenges of data governance while keeping ${company.name} profitable. There's room for improvement, but you've laid a good foundation for future growth.`
@@ -67,11 +67,11 @@ const createShareText = (stats: GameOverProps['stats'], companyContext: GameOver
   const profitInMillions = (stats.companyProfit / 1000000).toFixed(1);
   
   if (stats.companyProfit >= 10000000) {
-    return `I just completed a year as CDO of ${companyContext.name} in Governopoly with an impressive company profit of $${profitInMillions}M! My data leadership skills are top-notch! Try to beat my score at www.governopoly.io #DataGovernance #Governopoly`;
+    return `I just completed a year as CDO of ${companyContext.name} with an impressive company profit of $${profitInMillions}M! My data leadership skills are top-notch! Try to beat my score at www.governopoly.io #DataGovernance #Governopoly`;
   } else if (stats.companyProfit >= 5000000) {
-    return `I led ${companyContext.name} to a solid $${profitInMillions}M profit as CDO in Governopoly! Data governance is challenging but rewarding. See if you can do better at www.governopoly.io #DataGovernance #Governopoly`;
+    return `I led ${companyContext.name} to a solid $${profitInMillions}M profit as CDO! Data governance is challenging but rewarding. See if you can do better at www.governopoly.io #DataGovernance #Governopoly`;
   } else {
-    return `I survived a year as CDO at ${companyContext.name} in Governopoly with $${profitInMillions}M in company profit. Data leadership is tough! Try your hand at www.governopoly.io #DataGovernance #Governopoly`;
+    return `I survived a year as CDO at ${companyContext.name} with $${profitInMillions}M in company profit. Data leadership is tough! Try your hand at www.governopoly.io #DataGovernance #Governopoly`;
   }
 };
 
@@ -99,27 +99,24 @@ const GameOver: React.FC<GameOverProps> = ({ stats, onRestart, companyContext })
   
   return (
     <Container>
-      <VictoryImageContainer>
-        <VictoryImage src="/win.png" alt="Victory" />
-      </VictoryImageContainer>
       <Title>Year End Results</Title>
       
       <ScoreCard>
         <CompanyLogoImage src="/logo.png" alt={`${companyContext.name} logo`} />
         <CompanyName>{companyContext.name}</CompanyName>
         
-        <ScoreGrid>
-          <ScoreItem>
+        <div style={{ width: '100%', marginBottom: '20px' }}>
+          <ScoreItem style={{ width: '100%' }}>
             <ScoreLabel>Company Profit</ScoreLabel>
-            <ProfitValue>{formatCurrency(stats.companyProfit)}</ProfitValue>
+            <ProfitValue style={{ fontSize: '36px' }}>{formatCurrency(stats.companyProfit)}</ProfitValue>
           </ScoreItem>
-          <ScoreItem>
-            <ScoreLabel>CDO Budget Remaining</ScoreLabel>
-            <BudgetValue>{formatCurrency(stats.cdoBudget)}</BudgetValue>
-          </ScoreItem>
-        </ScoreGrid>
+        </div>
         
         <MetricsGrid>
+          <MetricItem>
+            <MetricLabel>CDO Budget Remaining</MetricLabel>
+            <MetricValue quality={100}>{formatCurrency(stats.cdoBudget)}</MetricValue>
+          </MetricItem>
           <MetricItem>
             <MetricLabel>Data Quality</MetricLabel>
             <MetricValue quality={stats.dataQuality}>{stats.dataQuality}%</MetricValue>
@@ -134,16 +131,7 @@ const GameOver: React.FC<GameOverProps> = ({ stats, onRestart, companyContext })
         <PerformanceMessage>{feedback.message}</PerformanceMessage>
       </ScoreCard>
       
-      <LessonsSection>
-        <h3>Key Data Governance Lessons:</h3>
-        <ul>
-          <li>Data governance requires balancing compliance, innovation, and operational efficiency</li>
-          <li>Proactive data management prevents costly incidents and builds trust</li>
-          <li>Stakeholder engagement is crucial for successful data initiatives</li>
-          <li>Data quality directly impacts business decisions and outcomes</li>
-          <li>A strong data culture must be nurtured across the organization</li>
-        </ul>
-      </LessonsSection>
+      
       
       <ButtonContainer>
         <ShareButton onClick={handleShare}>
@@ -216,8 +204,6 @@ const CompanyLogo = styled.div`
   margin-right: 15px;
 `;
 
-
-
 const CompanyName = styled.div`
   font-size: 22px;
   font-weight: bold;
@@ -243,14 +229,12 @@ const ScoreItem = styled.div`
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 `;
 
-
 const CompanyLogoImage = styled.img`
   width: 100px;
   height: 100px;
   border-radius: 50%;
   margin-right: 15px;
 `;
-
 
 const ScoreLabel = styled.div`
   font-size: 14px;
@@ -272,7 +256,7 @@ const BudgetValue = styled.div`
 
 const MetricsGrid = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
   width: 100%;
   margin-bottom: 30px;

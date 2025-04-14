@@ -122,7 +122,7 @@ Options:
         outcome: {
           description: "The vendor's poor communication and slow response reflected badly on your company. Customers are angry that you attempted to shift responsibility, and regulators question your vendor management practices.",
           budgetImpact: 0,
-          profitImpact: -400000,
+          profitImpact: -100000,
           dataQualityImpact: 0,
           reputationImpact: -30
         }
@@ -501,7 +501,7 @@ Options:
 const BudgetEmails: Email[] = [
 {
   id: "email-009",
-  sender: "ceo@ninelives.io",
+  sender: "CEO Office",
   title: "Funds for Modern Data Stack",
   content: "To scale our data efforts, you recommended investing in a modern data stack (warehouse, ELT, governance tools). Here are some proprosal for additional budget :",
   category: "budget",
@@ -536,10 +536,10 @@ const BudgetEmails: Email[] = [
       text: "Use budget tail for now instead",
       outcome: {
         description: "You save data quality now, but innovation stalls.",
-        budgetImpact: 100000,
-        profitImpact: 100000,
+        budgetImpact: 300000,
+        profitImpact: 0,
         dataQualityImpact: 10,
-        reputationImpact: 0
+        reputationImpact: 20
       }
     }
   ]
@@ -547,8 +547,8 @@ const BudgetEmails: Email[] = [
 ,
 {
   id: "email-010",
-  sender: "ceo@ninelives.io",
-  title: "Approved: Emergency Budget to Start",
+  sender: "CEO Office",
+  title: "Approved: Emergency Budget to Restart",
   content: "I’m releasing emergency funds—you decide how to spend them. Let’s not lose momentum.",
   category: "budget",
   minimumReputation: 10,
@@ -559,11 +559,11 @@ const BudgetEmails: Email[] = [
       id: 1,
       text: "Hire a specialized firm to audit everything",
       outcome: {
-        description: "You discover existing state and plan good decisions.",
-        budgetImpact: 200000,
+        description: "You finally discover existing state and plan good decisions.",
+        budgetImpact: 400000,
         profitImpact: 0,
         dataQualityImpact: 5,
-        reputationImpact: 0
+        reputationImpact: -5
       }
     },
     {
@@ -571,7 +571,7 @@ const BudgetEmails: Email[] = [
       text: "Handle audit in-house with your team",
       outcome: {
         description: "Partial knowledge gathered, team is discovering data quality.",
-        budgetImpact: 100000,
+        budgetImpact: 200000,
         profitImpact: 0,
         dataQualityImpact: 10,
         reputationImpact: 0
@@ -582,7 +582,7 @@ const BudgetEmails: Email[] = [
       text: "Skip audit, launch data quick wins",
       outcome: {
         description: "Quick and cheap, but start cleaning right now.",
-        budgetImpact: 50000,
+        budgetImpact: 100000,
         profitImpact: 0,
         dataQualityImpact: 20,
         reputationImpact: -5
@@ -593,7 +593,7 @@ const BudgetEmails: Email[] = [
 ,
 {
   id: "email-012",
-  sender: "ceo@ninelives.io",
+  sender: "CEO Office",
   title: "Budget Unlocked: Time to Build Our AI Future",
   content: "We’ve hit a growth milestone, and it’s time to use data to get predictive. I’ve carved out funds for you to lead our AI push—forecasting, personalization, the works. Run with it.",
   category: "budget",
@@ -639,7 +639,7 @@ const BudgetEmails: Email[] = [
 ,
 {
   id: "email-009",
-  sender: "ceo@ninelives.io",
+  sender: "CEO Office",
   title: "Budget Approved: Keep Modernizing Our Data Infrastructure",
   content: "Thanks to your team’s foundational work, we’re in a strong position to upgrade our data systems. I’ve approved additional budget to help you modernize our claims, underwriting, and risk data pipelines. Choose your path.",
   category: "budget",
@@ -685,7 +685,7 @@ const BudgetEmails: Email[] = [
 ,
 {
   id: "email-010",
-  sender: "ceo@ninelives.io",
+  sender: "CEO Office",
   title: "Budget Released for Our Claims and Risk Data",
   content: "With increasing data usage across underwriting and claims, we need to secure our systems. I’ve released additional funds to strengthen data recovery and backup : your move on how to use them.",
   category: "budget",
@@ -731,7 +731,7 @@ const BudgetEmails: Email[] = [
 ,
 {
   id: "email-013",
-  sender: "ceo@ninelives.io",
+  sender: "CEO Office",
   title: "Cloud Growth Means Bigger Storage – You're Funded",
   content: "Our data volume is a good sign—it means we're scaling fast. I've approved extra storage budget. Let’s make sure performance keeps up with ambition.",
   category: "budget",
@@ -777,7 +777,7 @@ const BudgetEmails: Email[] = [
 ,
 {
   id: "email-011",
-  sender: "ceo@ninelives.io",
+  sender: "CEO Office",
   title: "Let’s Empower Everyone With Data",
   content: "We're growing fast—and to keep up, everyone needs to speak data. I’m unlocking funds for your data literacy initiative. Let’s build a culture of data fluency together.",
   category: "budget",
@@ -856,8 +856,8 @@ const BudgetEmails: Email[] = [
             description: 'The comprehensive approach uncovered and fixed several critical data pipeline issues. The finance team was initially frustrated by the delay but ultimately received more accurate data than in previous quarters.',
             budgetImpact: -200000,
             profitImpact: 200000,
-            dataQualityImpact: 15,
-            reputationImpact: 3
+            dataQualityImpact: 10,
+            reputationImpact: -5
           }
         },
         {
@@ -866,7 +866,7 @@ const BudgetEmails: Email[] = [
           outcome: {
             description: 'Your statistical approach produced a reasonable approximation that satisfied immediate needs, but an audit later revealed some significant misrepresentations. The underlying data quality issues remain unresolved.',
             budgetImpact: -50000,
-            profitImpact: -50000,
+            profitImpact: 0,
             dataQualityImpact: -5,
             reputationImpact: 5
           }
@@ -1453,7 +1453,7 @@ const BudgetEmails: Email[] = [
           outcome: {
             description: "Your analytics focus has generated valuable business insights that competitors can't match. However, data integration challenges are limiting the scope of what can be analyzed.",
             budgetImpact: -300000,
-            profitImpact: 400000,
+            profitImpact: 500000,
             dataQualityImpact: -5,
             reputationImpact: 5
           }
@@ -1503,7 +1503,7 @@ const BudgetEmails: Email[] = [
           outcome: {
             description: 'The benchmarking products have generated significant new revenue with minimal privacy concerns. Customers have responded positively to the industry insights they receive in return for data sharing.',
             budgetImpact: -350000,
-            profitImpact: 500000,
+            profitImpact: 800000,
             dataQualityImpact: 0,
             reputationImpact: 20
           }
@@ -1525,7 +1525,7 @@ const BudgetEmails: Email[] = [
           outcome: {
             description: 'Your cautious approach has avoided potential privacy pitfalls. While no new revenue streams were created, improved products have increased customer satisfaction and retention.',
             budgetImpact: -200000,
-            profitImpact: 400000,
+            profitImpact: 500000,
             dataQualityImpact: 10,
             reputationImpact: 10
           }
@@ -1553,7 +1553,7 @@ const BudgetEmails: Email[] = [
           outcome: {
             description: 'The unified cloud approach simplified operations and reduced costs through volume discounts. However, some vendor lock-in concerns have emerged as pricing models evolved.',
             budgetImpact: -300000,
-            profitImpact: 500000,
+            profitImpact: 800000,
             dataQualityImpact: -10,
             reputationImpact: -5
           }
@@ -1564,7 +1564,7 @@ const BudgetEmails: Email[] = [
           outcome: {
             description: 'The multi-cloud strategy provided flexibility and negotiating leverage but increased operational complexity. The best-of-breed services offer superior capabilities though integration challenges exist.',
             budgetImpact: -350000,
-            profitImpact: 600000,
+            profitImpact: 1000000,
             dataQualityImpact: -20,
             reputationImpact: -5
           }
@@ -1575,7 +1575,7 @@ const BudgetEmails: Email[] = [
           outcome: {
             description: 'The hybrid approach provided a balanced solution that satisfied security and compliance requirements. The cost savings were moderate, but the risk reduction was significant.',
             budgetImpact: -250000,
-            profitImpact: 400000,
+            profitImpact: 600000,
             dataQualityImpact: 5,
             reputationImpact: 10
           }
@@ -1603,7 +1603,7 @@ const BudgetEmails: Email[] = [
           outcome: {
             description: 'The customer-focused investments generated substantial revenue through improved personalization and reduced churn. Marketing effectiveness increased significantly, exceeding ROI projections.',
             budgetImpact: -500000,
-            profitImpact: 900000,
+            profitImpact: 1000000,
             dataQualityImpact: 5,
             reputationImpact: 10
           }
@@ -1614,7 +1614,7 @@ const BudgetEmails: Email[] = [
           outcome: {
             description: 'The operational improvements reduced costs across the organization through process automation and optimization. Supply chain and production efficiencies were particularly notable.',
             budgetImpact: -350000,
-            profitImpact: 700000,
+            profitImpact: 800000,
             dataQualityImpact: 25,
             reputationImpact: 10
           }
@@ -1625,7 +1625,7 @@ const BudgetEmails: Email[] = [
           outcome: {
             description: 'The risk-focused approach prevented several potential compliance issues and improved audit outcomes. While less visible than other options like quality remediation, it avoided substantial regulatory penalties.',
             budgetImpact: -200000,
-            profitImpact: 300000,
+            profitImpact: 500000,
             dataQualityImpact: -10,
             reputationImpact: 25
           }
