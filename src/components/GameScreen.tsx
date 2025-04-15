@@ -37,6 +37,8 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
   const [isMusicPlaying, setIsMusicPlaying] = useState(true);
   // Audio ref for new email notification sound
   const emailNotificationRef = useRef<HTMLAudioElement | null>(null);
+
+  const urgentEmailNotificationRef = useRef<HTMLAudioElement | null>(null);
   // Game clock and email generation
   const [gameStarted, setGameStarted] = useState(false);
   // Email state
@@ -60,8 +62,8 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
   const gameTimeRef = useRef<number>(0);
   const lastEmailTimeRef = useRef<number>(0);
   const totalGameTime = 180000; // 3 minutes in milliseconds
-  const emailEvery = 12000;
-
+  const emailEvery = 20000;
+  const urgentTotalTime = 20000;
   // Track urgent email timers
   const [urgentTimers, setUrgentTimers] = useState<{[emailId: string]: NodeJS.Timeout}>({});
   // Use a ref to track timers for cleanup
@@ -70,7 +72,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
   const [urgentTimerStartTimes, setUrgentTimerStartTimes] = useState<{[emailId: string]: number}>({});
   // Force UI updates for timers
   const [timerTick, setTimerTick] = useState<number>(0);
-  
+  const firstUrgentEmailTime = 30000;
   // Track remaining game time
   const [remainingTime, setRemainingTime] = useState<number>(totalGameTime / 1000); // 3 minutes in seconds
   
@@ -110,8 +112,25 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
         console.error('Email notification sound failed:', error);
       });
     }
+    
+    // Add vibration if supported by the device
+    if (navigator.vibrate) {
+      navigator.vibrate(200); // Vibrate for 200ms
+    }
   }, []);
   
+  const playUrgentEmailNotification = useCallback(() => {
+    if (urgentEmailNotificationRef.current) {
+      urgentEmailNotificationRef.current.play().catch(error => {
+        console.error('Urgent email notification sound failed:', error);
+      });
+    }
+    
+    // Add vibration if supported by the device - stronger pattern for urgent emails
+    if (navigator.vibrate) {
+      navigator.vibrate([200, 100, 200]); // Vibrate pattern: 200ms on, 100ms off, 200ms on
+    }
+  }, []);
   // Initialize background music when the component mounts
   useEffect(() => {
     // Create audio element
@@ -122,6 +141,10 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
     // Create email notification sound
     emailNotificationRef.current = new Audio('/click.ogg');
     emailNotificationRef.current.volume = 0.7;
+
+    // Create urgent email notification sound
+    urgentEmailNotificationRef.current = new Audio('/alarm.ogg');
+    urgentEmailNotificationRef.current.volume = 0.7;
     
     // Start playing background music
     backgroundMusicRef.current.play().catch(error => {
@@ -136,6 +159,9 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
       }
       if (emailNotificationRef.current) {
         emailNotificationRef.current.src = '';
+      }
+      if (urgentEmailNotificationRef.current) {
+        urgentEmailNotificationRef.current.src = '';
       }
     };
   }, []);
@@ -217,11 +243,18 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
     
     const now = Date.now();
     const timerStartTime = urgentTimerStartTimes[emailId];
-    const totalTime = 10000; // 10 seconds in milliseconds
+    const totalTime = urgentTotalTime; // 10 seconds in milliseconds
     const elapsed = now - timerStartTime;
     const remaining = Math.max(0, totalTime - elapsed);
     
-    return Math.floor(remaining / 1000); // Convert to seconds
+    // Vibrate when timer is less than 5 seconds
+    const remainingSeconds = Math.floor(remaining / 1000);
+    if (remainingSeconds <= 5 && remainingSeconds > 0 && navigator.vibrate && remainingSeconds % 1 === 0) {
+      // Short vibration pulse for each second under 5
+      navigator.vibrate(100);
+    }
+    
+    return remainingSeconds; // Convert to seconds
   };
 
   // Start a timer for urgent emails
@@ -257,7 +290,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
         dataQuality,
         reputation
       });
-    }, 10000); // 10 seconds
+    }, urgentTotalTime); // 10 seconds
     
     // Save the timer reference in both state and ref
     setUrgentTimers(prev => {
@@ -272,7 +305,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
   };
 
 
-  
+  // MAIN LOOP
   useEffect(() => {
     console.log('Game started');
     if (!gameStarted) return; // Don't start the game clock until the game is started
@@ -354,7 +387,8 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
       
       // Occasionally add an urgent email (about every 30-45 seconds)
       // Only add a new urgent if there isn't already one in progress
-      if (Math.random() < 0.005) { // 0.3% chance per 100ms = approx every 33 seconds
+      const nbCurrentUrgentEmails = Object.keys(urgentTimersRef.current).length;
+      if (Math.random() < 0.005 && gameTimeRef.current > firstUrgentEmailTime && nbCurrentUrgentEmails < 1) { // 0.3% chance per 100ms = approx every 33 seconds
         const urgentEmails = filteredAvailableEmails.filter(email => email.isUrgent);
         
         if (urgentEmails.length > 0) {
@@ -365,7 +399,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
           setInbox(prev => [...prev, urgentEmail]);
           
           // Play notification sound
-          playEmailNotification();
+          playUrgentEmailNotification();
           
           // Remove from available pool
           setAvailableEmails(prev => prev.filter(e => e.id !== urgentEmail.id));
@@ -609,6 +643,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
                   key={email.id} 
                   isSelected={selectedEmail?.id === email.id}
                   isUrgent={email.isUrgent}
+                  isCurrentUrgent={email.isUrgent && getTimeRemaining(email.id) <= 5}
                   onClick={() => handleEmailSelect(email)}
                 >
                   {email.isUrgent && (
@@ -757,6 +792,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
                 • Your goal is to maximize the profit (📈) of the company<br />
                 • You need a good reputation (⭐) to get more budget<br />
                 • You need good data quality (📊) to avoid urgent emails<br />
+                • You can wait to answer to non-urgent emails so that you can make the best decision<br />
                 • If your inbox has more than 7 unanswered emails, you'll be burnout !
               </EmptyWarning>
               {!gameStarted && (
@@ -982,8 +1018,12 @@ const EmailItem = styled.div<EmailItemProps>`
   transition: all 0.2s;
   position: relative;
   
-  ${props => props.isCurrentUrgent && `
+  ${props => props.isUrgent && `
     animation: urgentPulse 1s infinite alternate;
+  `}
+  
+  ${props => props.isCurrentUrgent && `
+    animation: vibrate 0.3s infinite;
   `}
   
   &:hover {
@@ -997,6 +1037,14 @@ const EmailItem = styled.div<EmailItemProps>`
     to {
       box-shadow: 0 0 0 8px rgba(207, 86, 40, 0);
     }
+  }
+  
+  @keyframes vibrate {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-2px); }
+    50% { transform: translateX(0); }
+    75% { transform: translateX(2px); }
+    100% { transform: translateX(0); }
   }
 `;
 
