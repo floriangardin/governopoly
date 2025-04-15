@@ -94,43 +94,42 @@ const GameStart: React.FC<GameStartProps> = ({ onStart, companyContext }) => {
       {audioError && <AudioMessage>{audioError}</AudioMessage>}
       
       <HeaderContainer>
-        <Title>Governopoly</Title>
+      <CompanyLogoImage 
+          src="/logo.png" 
+          alt="Nine Lives Insurance logo"
+          style={{ width: '150px', height: '150px' }}
+        />
+        <Title>Nine Lives Insurance</Title>
         <MusicButton onClick={toggleMusic}>
           {isMusicPlaying ? '🔊' : '🔇'}
         </MusicButton>
       </HeaderContainer>
-      <Subtitle>Beat the last CDO</Subtitle>
+      
       
       <Description>
-        Welcome to {companyContext.name} I'm pleased that you are taking the challenge of being our new Chief Data Officer (CDO).
-        <br></br>
-        You said data could save our company ? let's see if you are up to the task, you have one year !
+      You’re the newly appointed Chief Data Officer. Your role is to guide Nine Lives through data chaos, one paw-step at a time. Expect surprises in your inbox and remember : data is your territory now.
       </Description>
-      
-      <CompanyCard>
-        <CompanyHeader>
-          <CompanyLogoImage src="/logo.png" alt={`${companyContext.name} logo`} />
-          <CompanyName>{companyContext.name}</CompanyName>
-        </CompanyHeader>
-        
-        <CompanyDescription>
-          {companyContext.description}
-        </CompanyDescription>
-        
-        
-      </CompanyCard>
+    
       
       <YourRole>
         <RoleTitle>Your Role as Chief Data Officer</RoleTitle>
         <RoleDescription>
-        As CDO, you'll face real-world challenges around data privacy, management, 
-        security breaches, compliance regulations, and stakeholder management across {companyContext.employees} employees. Every decision counts!
-        The last CDO didn't make it past the first year, will you ? 
+          <ul style={{ listStyleType: 'disc', paddingLeft: '20px' }}>
+            <li style={{ marginBottom: '10px' }}>
+              Emails come from across the company (and a few sassy cats) will ask for your decisions.
+            </li>
+            <li style={{ marginBottom: '10px' }}>
+              Your choices will affect budget, data quality, profit, and reputation.
+            </li>
+            <li>
+              Survive tough choices, messy data, and the occasional cyber-catastrophe.
+            </li>
+          </ul>
         </RoleDescription>
       </YourRole>
       
       <StartButton onClick={onStart}>
-        Start Your CDO Journey
+        Start
       </StartButton>
       
     </Container>

@@ -163,7 +163,7 @@ Options:
 3. Engage a cybersecurity firm for negotiation and forensic assistance`,
     category: 'dataBreach',
     minimumReputation: 40,
-    maximumDataQuality: 20,
+    maximumDataQuality: 70,
     isUrgent: true,
     choices: [
       {
@@ -582,6 +582,52 @@ const BudgetEmails: Email[] = [
       text: "Skip audit, launch data quick wins",
       outcome: {
         description: "Quick and cheap, but start cleaning right now.",
+        budgetImpact: 100000,
+        profitImpact: 0,
+        dataQualityImpact: 20,
+        reputationImpact: -5
+      }
+    }
+  ]
+}
+,
+{
+  id: "email-020",
+  sender: "CEO Office",
+  title: "Budget Good News",
+  content: "I’ve decided to extend your budget for now. Let’s do our best.",
+  category: "budget",
+  minimumReputation: 10,
+  maximumDataQuality: 100,
+  isUrgent: false,
+  choices: [
+    {
+      id: 1,
+      text: "Take the most of it.",
+      outcome: {
+        description: "You take a deep breath and start planning your next moves.",
+        budgetImpact: 300000,
+        profitImpact: 0,
+        dataQualityImpact: 5,
+        reputationImpact: 0
+      }
+    },
+    {
+      id: 2,
+      text: "Use it to quick fix data quality issues.",
+      outcome: {
+        description: "Team is happy, data quality is improved, but you can do more.",
+        budgetImpact: 200000,
+        profitImpact: 0,
+        dataQualityImpact: 10,
+        reputationImpact: 0
+      }
+    },
+    {
+      id: 3,
+      text: "Skip money, focus on data quality.",
+      outcome: {
+        description: "Internal team members work hard to improve data quality.",
         budgetImpact: 100000,
         profitImpact: 0,
         dataQualityImpact: 20,
@@ -1039,7 +1085,7 @@ const BudgetEmails: Email[] = [
       category: 'gdpr',
       minimumReputation: 0,
       maximumDataQuality: 100,
-      isUrgent: true,
+      isUrgent: false,
       choices: [
         {
           id: 1,
@@ -1088,7 +1134,7 @@ const BudgetEmails: Email[] = [
   3. Outsource SAR processing to a specialized legal service provider`,
       category: 'gdpr',
       minimumReputation: 0,
-      maximumDataQuality: 80,
+      maximumDataQuality: 60,
       isUrgent: true,
       choices: [
         {
@@ -1391,7 +1437,7 @@ const BudgetEmails: Email[] = [
   3. Decline to comment for this story`,
       category: 'misc',
       minimumReputation: 0,
-      maximumDataQuality: 100,
+      maximumDataQuality: 30,
       isUrgent: true,
       choices: [
         {
