@@ -12,7 +12,7 @@ Options:
 2. Continue monitoring while our team investigates the extent of the breach
 3. Notify affected customers immediately while investigation continues`,
     category: 'dataBreach',
-    minimumReputation: 50,
+    minimumReputation: 20,
     maximumDataQuality: 50,
     isUrgent: true,
     choices: [
@@ -22,9 +22,9 @@ Options:
         outcome: {
           description: "You've contained the breach quickly, but business operations were disrupted for 4 hours. The rapid response prevented further data exposure.",
           budgetImpact: -100000,
-          profitImpact: -500000,
+          profitImpact: -400000,
           dataQualityImpact: 0,
-          reputationImpact: -40
+          reputationImpact: -30
         }
       },
       {
@@ -63,7 +63,7 @@ Options:
 3. Delay all notifications for 48 hours until we have complete information`,
     category: 'dataBreach',
     minimumReputation: 35,
-    maximumDataQuality: 30,
+    maximumDataQuality: 70,
     isUrgent: true,
     choices: [
       {
@@ -112,8 +112,8 @@ Options:
 2. Take control of the response and notification process ourselves
 3. Collaborate with the vendor on a joint response strategy`,
     category: 'dataBreach',
-    minimumReputation: 0,
-    maximumDataQuality: 20,
+    minimumReputation: 5,
+    maximumDataQuality: 40,
     isUrgent: true,
     choices: [
       {
@@ -252,8 +252,8 @@ Options:
 {
   id: "new_2",
   sender: "hr@ninelives.io",
-  title: "Need Your Input: First Hire",
-  content: "We’ve budgeted for your first data hire. Do you want a data engineer, analyst, or governance expert?",
+  title: "Need Your Input: Next Hire",
+  content: "We’ve budgeted for your next data hire. Do you want a data engineer, analyst, or governance expert?",
   category: "hr",
   minimumReputation: 0,
   maximumDataQuality: 100,
@@ -265,7 +265,7 @@ Options:
       outcome: {
         description: "Data infrastructure starts to shape up quickly, but the technical profile is not good at business talk",
         budgetImpact: -150000,
-        profitImpact: 200000,
+        profitImpact: 500000,
         dataQualityImpact: 10,
         reputationImpact: -5
       }
@@ -276,7 +276,7 @@ Options:
       outcome: {
         description: "You get quick wins with visual insights.",
         budgetImpact: -120000,
-        profitImpact: 300000,
+        profitImpact: 400000,
         dataQualityImpact: 5,
         reputationImpact: 0
       }
@@ -287,7 +287,7 @@ Options:
       outcome: {
         description: "Processes improve, but results are slow to show.",
         budgetImpact: -200000,
-        profitImpact: 100000,
+        profitImpact: 300000,
         dataQualityImpact: 10,
         reputationImpact: 5
       }
@@ -317,7 +317,7 @@ Options:
       outcome: {
         description: 'The centralized structure improved standardization and collaboration among data professionals. However, some business units feel the central team is less responsive to their specific needs.',
         budgetImpact: -100000,
-        profitImpact: 300000,
+        profitImpact: 400000,
         dataQualityImpact: 5,
         reputationImpact: -10
       }
@@ -328,7 +328,7 @@ Options:
       outcome: {
         description: 'The hybrid approach balanced central governance with local responsiveness. Embedded analysts strengthened relationships with business units while maintaining consistent standards.',
         budgetImpact: -300000,
-        profitImpact: 400000,
+        profitImpact: 500000,
         dataQualityImpact: 10,
         reputationImpact: 10
       }
@@ -339,7 +339,7 @@ Options:
       outcome: {
         description: 'The guild model improved integration with business units but made governance more challenging. Knowledge sharing increased, but inconsistent practices emerged across departments.',
         budgetImpact: -50000,
-        profitImpact: 200000,
+        profitImpact: 300000,
         dataQualityImpact: -15,
         reputationImpact: 5
       }
@@ -367,7 +367,7 @@ Options:
       outcome: {
         description: 'The salary increases successfully attracted several highly qualified candidates, filling critical roles quickly. However, it created internal equity issues with existing employees requesting similar adjustments.',
         budgetImpact: -500000,
-        profitImpact: 700000,
+        profitImpact: 800000,
         dataQualityImpact: 10,
         reputationImpact: -10
       }
@@ -428,7 +428,7 @@ Options:
       outcome: {
         description: 'The expanded team reduced individual workloads and improved morale. While expensive, the investment in additional headcount yielded benefits in reduced turnover and increased productivity.',
         budgetImpact: -250000,
-        profitImpact: 200000,
+        profitImpact: 300000,
         dataQualityImpact: 10,
         reputationImpact: 15
       }
@@ -457,7 +457,7 @@ Options:
 2. Role-based training tailored to different job functions
 3. Self-paced online learning with optional certification`,
   category: 'hr',
-  minimumReputation: 80,
+  minimumReputation: 65,
   maximumDataQuality: 100,
   isUrgent: false,
   choices: [
@@ -827,7 +827,7 @@ const BudgetEmails: Email[] = [
   title: "Let’s Empower Everyone With Data",
   content: "We're growing fast—and to keep up, everyone needs to speak data. I’m unlocking funds for your data literacy initiative. Let’s build a culture of data fluency together.",
   category: "budget",
-  minimumReputation: 80,
+  minimumReputation: 70,
   maximumDataQuality: 100,
   isUrgent: false,
   choices: [
@@ -901,7 +901,7 @@ const BudgetEmails: Email[] = [
           outcome: {
             description: 'The comprehensive approach uncovered and fixed several critical data pipeline issues. The finance team was initially frustrated by the delay but ultimately received more accurate data than in previous quarters.',
             budgetImpact: -200000,
-            profitImpact: 200000,
+            profitImpact: 250000,
             dataQualityImpact: 10,
             reputationImpact: -5
           }
@@ -940,7 +940,7 @@ const BudgetEmails: Email[] = [
           outcome: {
             description: 'The enrichment significantly improved profile completeness, allowing more effective targeting. However, some privacy advocates have raised concerns about how the third-party data was collected and integrated.',
             budgetImpact: -150000,
-            profitImpact: 300000,
+            profitImpact: 400000,
             dataQualityImpact: 10,
             reputationImpact: -10
           }
@@ -1254,7 +1254,7 @@ const BudgetEmails: Email[] = [
           outcome: {
             description: 'The legitimate interest approach maintained a larger marketing database but drew scrutiny from privacy advocates. Several complaints were filed, and some customers expressed frustration about unexpected communications.',
             budgetImpact: -20000,
-            profitImpact: 300000,
+            profitImpact: 400000,
             dataQualityImpact: -5,
             reputationImpact: -15
           }
@@ -1346,7 +1346,7 @@ const BudgetEmails: Email[] = [
           outcome: {
             description: 'The integrated platform dramatically improved resolution times and customer satisfaction. Customer support team members report higher job satisfaction, and several have commented on how much easier it is to provide personalized service.',
             budgetImpact: -400000,
-            profitImpact: 500000,
+            profitImpact: 900000,
             dataQualityImpact: 15,
             reputationImpact: 15
           }
@@ -1357,7 +1357,7 @@ const BudgetEmails: Email[] = [
           outcome: {
             description: "The training improved team members capabilities but didn't address the fundamental integration issues. Some improvement in efficiency was achieved, though team members still struggle with complex multi-system queries.",
             budgetImpact: -150000,
-            profitImpact: 200000,
+            profitImpact: 400000,
             dataQualityImpact: 5,
             reputationImpact: 0
           }
@@ -1368,7 +1368,7 @@ const BudgetEmails: Email[] = [
           outcome: {
             description: 'The specialized team effectively handles complex cases but created a new dependency. The two-tier support model works but has introduced new handoff points that occasionally create delays.',
             budgetImpact: -100000,
-            profitImpact: 250000,
+            profitImpact: 500000,
             dataQualityImpact: 10,
             reputationImpact: -5
           }

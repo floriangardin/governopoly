@@ -31,43 +31,43 @@ const formatCurrency = (amount: number): string => {
   }).format(amount);
 };
 
-const getReason = (reason: DefeatScreenProps['reason']): { title: string; description: string; image: string } => {
+const getReason = (reason: DefeatScreenProps['reason']): { title: string; description: string } => {
   switch (reason) {
     case 'budget':
       return {
         title: "Budget Crisis!",
         description: "Your CDO budget has been depleted. Without resources to implement data governance initiatives, the board has decided to restructure the data organization and has terminated your position.",
-        image: "/loose.png"
+        
       };
     case 'dataQuality':
       return {
         title: "Data Quality Disaster!",
         description: "Data quality has deteriorated to critical levels. Faulty data has led to major business decisions that cost the company millions. The CEO has asked for your resignation.",
-        image: "/loose.png"
+        
       };
     case 'reputation':
       return {
         title: "Reputation Ruined!",
         description: "Your data practices have damaged the company's reputation beyond repair. Public trust has eroded, and the board has decided a new leadership approach is needed for data governance.",
-        image: "/loose.png"
+        
       };
     case 'burnout':
       return {
         title: "Email Overload!",
         description: "Your inbox has become unmanageable with too many pending requests. The stress and inability to keep up has led to burnout. Your doctor has ordered you to take an extended leave of absence.",
-        image: "/loose.png"
+       
       };
     case 'dataBreach':
       return {
         title: "Data Breach Crisis!",
         description: "You failed to respond to an urgent data breach in time. The incident has escalated, resulting in massive data exposure and regulatory penalties. The board has asked for your immediate resignation.",
-        image: "/jail.png"
+        
       };
     default:
       return {
         title: "Game Over",
         description: "Your tenure as CDO has come to an end.",
-        image: "/loose.png"
+        
       };
   }
 };
@@ -102,9 +102,7 @@ const DefeatScreen: React.FC<DefeatScreenProps> = ({ reason, stats, onRestart, c
   
   return (
     <Container>
-      <ReasonImageContainer>
-        <ReasonImage src={reasonData.image} alt={reasonData.title} />
-      </ReasonImageContainer>
+      
       <ReasonTitle>{reasonData.title}</ReasonTitle>
       <ReasonDescription>{reasonData.description}</ReasonDescription>
       
@@ -230,23 +228,8 @@ const StatValue = styled.div<StatValueProps>`
 const ButtonContainer = styled.div`
   display: flex;
   gap: 20px;
-`;
-
-const RestartButton = styled.button`
-  background: #35adb6;
-  color: white;
-  font-size: 16px;
-  font-weight: bold;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.2s;
-  margin-bottom: 20px;
-  
-  &:hover {
-    background: #2d9198;
-  }
+  justify-content: center;
+  margin-top: 30px;
 `;
 
 const ShareButton = styled.button`
@@ -259,9 +242,27 @@ const ShareButton = styled.button`
   border-radius: 6px;
   cursor: pointer;
   transition: background 0.2s;
+  min-width: 160px;
   
   &:hover {
     background: #e09c24;
+  }
+`;
+
+const RestartButton = styled.button`
+  background: #35adb6;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+  min-width: 160px;
+  
+  &:hover {
+    background: #2d9198;
   }
 `;
 
