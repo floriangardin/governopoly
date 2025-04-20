@@ -17,7 +17,7 @@ export type DefeatReason = 'budget' | 'dataQuality' | 'reputation' | 'burnout' |
 export const companyContext = {
   name: "Nine Lives insurance.",
   industry: "Insurance",
-  employees: 1000,
+  employees: 1243,
   revenue: "$1.2 billion",
   founded: 2005,
   headquarters: "San Francisco",

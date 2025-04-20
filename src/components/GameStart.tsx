@@ -122,7 +122,7 @@ const GameStart: React.FC<GameStartProps> = ({ onStart, companyContext }) => {
               Your choices will affect budget, data quality, profit, and reputation.
             </li>
             <li>
-              Survive tough choices, messy data, and the occasional cyber-catastrophe.
+              Survive tough choices, messy data, and occasional cyber-catastrophes.
             </li>
           </ul>
         </RoleDescription>
