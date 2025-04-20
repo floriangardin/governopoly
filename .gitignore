@@ -22,3 +22,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 deploy_aws.sh
+create_certificate.sh
+dist-config.json
+cloudfront-config.json
+cloudfront-update.json

@@ -81,20 +81,16 @@ const GameOver: React.FC<GameOverProps> = ({ stats, onRestart, companyContext })
   const handleShare = () => {
     const shareText = createShareText(stats, companyContext);
     
-    // Try to use navigator.clipboard if available
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(shareText)
-        .then(() => {
-          alert('LinkedIn post copied to clipboard! You can now paste it into LinkedIn.');
-        })
-        .catch(err => {
-          console.error('Failed to copy text: ', err);
-          alert('Could not copy automatically. Please copy the text manually:\n\n' + shareText);
-        });
-    } else {
-      // Fallback
-      alert('Please copy this text to share on LinkedIn:\n\n' + shareText);
-    }
+    // Create LinkedIn sharing URL with the most current format
+    const websiteUrl = 'https://www.whoisthebestcdo.com';
+    const encodedText = encodeURIComponent(shareText);
+    const encodedUrl = encodeURIComponent(websiteUrl);
+    
+    // LinkedIn pre-populated sharing URL (current format as of 2023-2024)
+    const linkedInShareUrl = `https://www.linkedin.com/feed/?shareActive&mini=true&text=${encodedText}&url=${encodedUrl}`;
+    
+    // Open LinkedIn in a new tab
+    window.open(linkedInShareUrl, '_blank');
   };
   
   return (
