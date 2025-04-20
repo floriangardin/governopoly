@@ -1,5 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
+import { useSoundService } from '../services/SoundService';
 
 interface GameStartProps {
   onStart: () => void;
@@ -20,88 +21,34 @@ const formatNumber = (num: number): string => {
 };
 
 const GameStart: React.FC<GameStartProps> = ({ onStart, companyContext }) => {
-  const audioRef = useRef<HTMLAudioElement>(null);
-  const [audioError, setAudioError] = useState<string | null>(null);
-  const [isMusicPlaying, setIsMusicPlaying] = useState(true);
-
-  useEffect(() => {
-    // Play background music when component mounts
-    if (audioRef.current) {
-      audioRef.current.volume = 0.3; // Set volume to 30%
-      
-      // Attempt to play the audio
-      const playPromise = audioRef.current.play();
-      
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => {
-            console.log('Audio playback started successfully');
-          })
-          .catch(error => {
-            // Autoplay might be blocked by browser policies
-            console.error('Audio playback failed:', error);
-            setAudioError('Audio autoplay was prevented by your browser. Click anywhere to start the music.');
-            
-            // Add a click handler to start audio when user interacts with the page
-            const startAudio = () => {
-              if (audioRef.current) {
-                audioRef.current.play()
-                  .then(() => {
-                    document.removeEventListener('click', startAudio);
-                    setAudioError(null);
-                  })
-                  .catch(err => console.error('Still failed to play audio:', err));
-              }
-            };
-            
-            document.addEventListener('click', startAudio);
-          });
-      }
-    }
-
-    // Cleanup function to stop audio when component unmounts
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current.currentTime = 0;
-      }
-      // Remove any click listeners
-      document.removeEventListener('click', () => {});
-    };
-  }, []);
-
-  // Toggle music playback
-  const toggleMusic = () => {
-    setIsMusicPlaying(prev => !prev);
-  };
+  const { playSound, toggleMusic, isMusicMuted, audioReady } = useSoundService();
   
-  // Effect to handle music play/pause based on state
   useEffect(() => {
-    if (audioRef.current) {
-      if (isMusicPlaying) {
-        audioRef.current.play().catch(error => {
-          console.error('Background music playback failed:', error);
-        });
-      } else {
-        audioRef.current.pause();
-      }
-    }
-  }, [isMusicPlaying]);
+    // Always attempt to play background music when component mounts
+    // The SoundService will handle muting internally
+    playSound('mainMenu', true, 0.3);
+    
+    // Cleanup handled by SoundService
+    return () => {};
+  }, [playSound]);
 
   return (
     <Container>
-      <audio ref={audioRef} src="/main_menu.mp3" loop preload="auto" />
-      {audioError && <AudioMessage>{audioError}</AudioMessage>}
+      {!audioReady && (
+        <AudioMessage>
+          Click anywhere to enable background music
+        </AudioMessage>
+      )}
       
       <HeaderContainer>
       <CompanyLogoImage 
-          src="/logo.png" 
+          src="/og-image.png" 
           alt="Nine Lives Insurance logo"
           style={{ width: '150px', height: '150px' }}
         />
         <Title>Nine Lives Insurance</Title>
-        <MusicButton onClick={toggleMusic}>
-          {isMusicPlaying ? '🔊' : '🔇'}
+        <MusicButton onClick={toggleMusic} aria-label={isMusicMuted ? "Unmute music" : "Mute music"}>
+          {isMusicMuted ? '🔇' : '🔊'}
         </MusicButton>
       </HeaderContainer>
       
@@ -283,7 +230,7 @@ const RoleTitle = styled.h3`
   margin-bottom: 10px;
 `;
 
-const RoleDescription = styled.p`
+const RoleDescription = styled.div`
   font-size: 16px;
   line-height: 1.5;
   color: #3c4043;

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Email, Choice } from '../types/Email';
 import { getAllEmails, getUrgentEmails } from '../data/emails';
 import { DefeatReason } from '../App';
+import { useSoundService } from '../services/SoundService';
 
 // Types
 interface GameScreenProps {
@@ -32,13 +33,10 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
   const [reputation, setReputation] = useState(0); // 0-100 scale
   const companyName = companyContext.name;
   const maxEmails = 7;
-  // Audio ref for background music
-  const backgroundMusicRef = useRef<HTMLAudioElement | null>(null);
-  const [isMusicPlaying, setIsMusicPlaying] = useState(true);
-  // Audio ref for new email notification sound
-  const emailNotificationRef = useRef<HTMLAudioElement | null>(null);
-
-  const urgentEmailNotificationRef = useRef<HTMLAudioElement | null>(null);
+  
+  // Sound service
+  const { playSound, stopSound, toggleMusic, isMusicMuted, audioReady } = useSoundService();
+  
   // Game clock and email generation
   const [gameStarted, setGameStarted] = useState(false);
   // Email state
@@ -105,88 +103,39 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
   
   // Play email notification sound
   const playEmailNotification = useCallback(() => {
-    if (emailNotificationRef.current) {
-      // Reset the audio to the beginning to allow for rapid consecutive plays
-      emailNotificationRef.current.currentTime = 0;
-      emailNotificationRef.current.play().catch(error => {
-        console.error('Email notification sound failed:', error);
-      });
-    }
+    playSound('click', false, 0.7);
     
     // Add vibration if supported by the device
     if (navigator.vibrate) {
       navigator.vibrate(200); // Vibrate for 200ms
     }
-  }, []);
+  }, [playSound]);
   
   const playUrgentEmailNotification = useCallback(() => {
-    if (urgentEmailNotificationRef.current) {
-      urgentEmailNotificationRef.current.play().catch(error => {
-        console.error('Urgent email notification sound failed:', error);
-      });
-    }
+    playSound('alarm', false, 0.7);
     
     // Add vibration if supported by the device - stronger pattern for urgent emails
     if (navigator.vibrate) {
       navigator.vibrate([200, 100, 200]); // Vibrate pattern: 200ms on, 100ms off, 200ms on
     }
-  }, []);
+  }, [playSound]);
+  
   // Initialize background music when the component mounts
   useEffect(() => {
-    // Create audio element
-    backgroundMusicRef.current = new Audio('/main_music.mp3');
-    backgroundMusicRef.current.loop = true;
-    backgroundMusicRef.current.volume = 0.5;
+    // Always attempt to play background music when component mounts
+    // The SoundService will handle muting internally
+    playSound('mainMusic', true, 0.5);
     
-    // Create email notification sound
-    emailNotificationRef.current = new Audio('/click.ogg');
-    emailNotificationRef.current.volume = 0.7;
-
-    // Create urgent email notification sound
-    urgentEmailNotificationRef.current = new Audio('/alarm.ogg');
-    urgentEmailNotificationRef.current.volume = 0.7;
-    
-    // Start playing background music
-    backgroundMusicRef.current.play().catch(error => {
-      console.error('Background music playback failed:', error);
-    });
-    
-    // Clean up when component unmounts
+    // Cleanup function to stop the music when unmounting
     return () => {
-      if (backgroundMusicRef.current) {
-        backgroundMusicRef.current.pause();
-        backgroundMusicRef.current.src = '';
-      }
-      if (emailNotificationRef.current) {
-        emailNotificationRef.current.src = '';
-      }
-      if (urgentEmailNotificationRef.current) {
-        urgentEmailNotificationRef.current.src = '';
-      }
+      stopSound('mainMusic');
     };
-  }, []);
+  }, [playSound, stopSound]);
   
   const emailInStack = (emailId: string): boolean => {
     return inbox.findIndex(email => email.id === emailId) !== -1;
   }
-  // Toggle music playback
-  const toggleMusic = useCallback(() => {
-    setIsMusicPlaying(prev => !prev);
-  }, []);
-  
-  // Effect to handle music play/pause based on state
-  useEffect(() => {
-    if (backgroundMusicRef.current) {
-      if (isMusicPlaying) {
-        backgroundMusicRef.current.play().catch(error => {
-          console.error('Background music playback failed:', error);
-        });
-      } else {
-        backgroundMusicRef.current.pause();
-      }
-    }
-  }, [isMusicPlaying]);
-  
+
   // Function to clear all urgent email timers
   const clearUrgentEmails = useCallback(() => {
     // Clear all timeout references using the ref (always has latest values)
@@ -578,6 +527,9 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
     gameTimeRef.current = 0;
     lastEmailTimeRef.current = 0;
     setShowEmailList(true);
+    
+    // Make sure music is playing when the game starts (or tracked as active if muted)
+    playSound('mainMusic', true, 0.5);
   };
   
   // Format time for display (MM:SS)
@@ -589,6 +541,12 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
   
   return (
     <Container>
+      {!audioReady && (
+        <AudioMessage>
+          Click anywhere to enable game sounds
+        </AudioMessage>
+      )}
+      
       {reputation <= 20 && (
         <BudgetWarning>
           💡 Increase your reputation (⭐) to receive more budget!
@@ -621,8 +579,8 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
             <ProgressValue>{reputation}%</ProgressValue>
           </ProgressContainer>
         </MetricItem>
-        <MusicButton onClick={toggleMusic}>
-          {isMusicPlaying ? '🔊' : '🔇'}
+        <MusicButton onClick={toggleMusic} aria-label={isMusicMuted ? "Unmute music" : "Mute music"}>
+          {isMusicMuted ? '🔇' : '🔊'}
         </MusicButton>
       </Header>
       
@@ -1468,6 +1426,19 @@ const BudgetWarning = styled.div`
   padding: 8px;
   font-size: 14px;
   font-weight: 500;
+`;
+
+const AudioMessage = styled.div`
+  background: rgba(53, 173, 182, 0.1);
+  padding: 10px 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  text-align: center;
+  color: #35adb6;
+  font-size: 14px;
+  width: 100%;
+  border: 1px solid #35adb6;
+  z-index: 10;
 `;
 
 export default GameScreen; 
