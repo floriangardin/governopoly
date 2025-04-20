@@ -107,7 +107,7 @@ const GameStart: React.FC<GameStartProps> = ({ onStart, companyContext }) => {
       
       
       <Description>
-      You’re the newly appointed Chief Data Officer. Your role is to guide Nine Lives through data chaos, one paw-step at a time. Expect surprises in your inbox and remember : data is your territory now.
+      You're the newly appointed Chief Data Officer. Your role is to guide Nine Lives through data chaos, one paw-step at a time. Expect surprises in your inbox and remember : data is your territory now.
       </Description>
     
       
@@ -146,6 +146,14 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  
+  @media (max-width: 768px) {
+    padding: 30px 20px;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 20px 15px;
+  }
 `;
 
 const HeaderContainer = styled.div`
@@ -154,12 +162,27 @@ const HeaderContainer = styled.div`
   justify-content: center;
   width: 100%;
   position: relative;
+  flex-wrap: wrap;
+  gap: 10px;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 
 const Title = styled.h1`
   font-size: 48px;
   color: #35adb6;
   margin-bottom: 8px;
+  text-align: center;
+  
+  @media (max-width: 768px) {
+    font-size: 36px;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 28px;
+  }
 `;
 
 const Subtitle = styled.h2`
