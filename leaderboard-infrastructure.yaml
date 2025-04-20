@@ -1,0 +1,259 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'CloudFormation template for Governopoly leaderboard with DynamoDB and AppSync'
+
+Parameters:
+  ExpiryInDays:
+    Type: Number
+    Default: 365
+    Description: Number of days until the API key expires
+
+Resources:
+  # DynamoDB Table for Leaderboard
+  LeaderboardTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: GovernopolyLeaderboard
+      BillingMode: PAY_PER_REQUEST  # Minimal cost, pay only for what you use
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: companyProfit
+          AttributeType: N
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: CompanyProfitIndex
+          KeySchema:
+            - AttributeName: id
+              KeyType: HASH
+            - AttributeName: companyProfit
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+
+  # AppSync API
+  LeaderboardAPI:
+    Type: AWS::AppSync::GraphQLApi
+    Properties:
+      Name: GovernopolyLeaderboardAPI
+      AuthenticationType: API_KEY
+      LogConfig:
+        CloudWatchLogsRoleArn: !GetAtt AppSyncLogsRole.Arn
+        FieldLogLevel: ERROR
+
+  # AppSync API Key with proper expiration
+  LeaderboardAPIKey:
+    Type: AWS::AppSync::ApiKey
+    Properties:
+      ApiId: !GetAtt LeaderboardAPI.ApiId
+      Description: API Key for Governopoly Leaderboard
+      # Unix timestamp for June 1, 2025 (far enough in the future)
+      Expires: 1748952000
+
+  # AppSync Schema
+  LeaderboardSchema:
+    Type: AWS::AppSync::GraphQLSchema
+    Properties:
+      ApiId: !GetAtt LeaderboardAPI.ApiId
+      Definition: |
+        type LeaderboardEntry {
+          id: ID!
+          playerName: String!
+          companyProfit: Float!
+          cdoBudget: Float!
+          dataQuality: Int!
+          reputation: Int!
+          company: String!
+          defeat: String
+          timestamp: String!
+        }
+
+        type LeaderboardResponse {
+          items: [LeaderboardEntry]
+        }
+
+        input CreateLeaderboardEntryInput {
+          playerName: String!
+          companyProfit: Float!
+          cdoBudget: Float!
+          dataQuality: Int!
+          reputation: Int!
+          company: String!
+          defeat: String
+          timestamp: String!
+        }
+
+        type Query {
+          getLeaderboardEntry(id: ID!): LeaderboardEntry
+          listLeaderboardEntries(limit: Int, sortDirection: String, sortField: String): LeaderboardResponse
+        }
+
+        type Mutation {
+          createLeaderboardEntry(input: CreateLeaderboardEntryInput!): LeaderboardEntry
+        }
+
+        schema {
+          query: Query
+          mutation: Mutation
+        }
+
+  # IAM Role for AppSync Logs
+  AppSyncLogsRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: appsync.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSAppSyncPushToCloudWatchLogs
+
+  # IAM Role for AppSync to access DynamoDB
+  AppSyncDynamoDBRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: appsync.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: AppSyncDynamoDBAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:DeleteItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                Resource: 
+                  - !GetAtt LeaderboardTable.Arn
+                  - !Join ['', [!GetAtt LeaderboardTable.Arn, '/index/*']]
+
+  # AppSync DataSource for DynamoDB
+  LeaderboardTableDataSource:
+    Type: AWS::AppSync::DataSource
+    Properties:
+      ApiId: !GetAtt LeaderboardAPI.ApiId
+      Name: LeaderboardDynamoDBTable
+      Type: AMAZON_DYNAMODB
+      ServiceRoleArn: !GetAtt AppSyncDynamoDBRole.Arn
+      DynamoDBConfig:
+        TableName: !Ref LeaderboardTable
+        AwsRegion: !Ref AWS::Region
+
+  # Resolver for createLeaderboardEntry mutation
+  CreateLeaderboardEntryResolver:
+    Type: AWS::AppSync::Resolver
+    Properties:
+      ApiId: !GetAtt LeaderboardAPI.ApiId
+      TypeName: Mutation
+      FieldName: createLeaderboardEntry
+      DataSourceName: !GetAtt LeaderboardTableDataSource.Name
+      RequestMappingTemplate: |
+        {
+          "version": "2017-02-28",
+          "operation": "PutItem",
+          "key": {
+            "id": $util.dynamodb.toDynamoDBJson($util.autoId())
+          },
+          "attributeValues": {
+            "playerName": $util.dynamodb.toDynamoDBJson($ctx.args.input.playerName),
+            "companyProfit": $util.dynamodb.toDynamoDBJson($ctx.args.input.companyProfit),
+            "cdoBudget": $util.dynamodb.toDynamoDBJson($ctx.args.input.cdoBudget),
+            "dataQuality": $util.dynamodb.toDynamoDBJson($ctx.args.input.dataQuality),
+            "reputation": $util.dynamodb.toDynamoDBJson($ctx.args.input.reputation),
+            "company": $util.dynamodb.toDynamoDBJson($ctx.args.input.company),
+            "timestamp": $util.dynamodb.toDynamoDBJson($ctx.args.input.timestamp),
+            #if($ctx.args.input.defeat)
+              "defeat": $util.dynamodb.toDynamoDBJson($ctx.args.input.defeat),
+            #end
+          }
+        }
+      ResponseMappingTemplate: |
+        $util.toJson($ctx.result)
+
+  # Resolver for getLeaderboardEntry query
+  GetLeaderboardEntryResolver:
+    Type: AWS::AppSync::Resolver
+    Properties:
+      ApiId: !GetAtt LeaderboardAPI.ApiId
+      TypeName: Query
+      FieldName: getLeaderboardEntry
+      DataSourceName: !GetAtt LeaderboardTableDataSource.Name
+      RequestMappingTemplate: |
+        {
+          "version": "2017-02-28",
+          "operation": "GetItem",
+          "key": {
+            "id": $util.dynamodb.toDynamoDBJson($ctx.args.id)
+          }
+        }
+      ResponseMappingTemplate: |
+        $util.toJson($ctx.result)
+
+  # Resolver for listLeaderboardEntries query
+  ListLeaderboardEntriesResolver:
+    Type: AWS::AppSync::Resolver
+    Properties:
+      ApiId: !GetAtt LeaderboardAPI.ApiId
+      TypeName: Query
+      FieldName: listLeaderboardEntries
+      DataSourceName: !GetAtt LeaderboardTableDataSource.Name
+      RequestMappingTemplate: |
+        #set($limit = 10)
+        #if($ctx.args.limit)
+          #set($limit = $ctx.args.limit)
+        #end
+        
+        #set($sortDirection = "DESC")
+        #if($ctx.args.sortDirection)
+          #set($sortDirection = $ctx.args.sortDirection)
+        #end
+        
+        #set($sortField = "companyProfit")
+        #if($ctx.args.sortField)
+          #set($sortField = $ctx.args.sortField)
+        #end
+        
+        {
+          "version": "2017-02-28",
+          "operation": "Scan",
+          "limit": $limit
+        }
+      ResponseMappingTemplate: |
+        #set($items = [])
+        #foreach($item in $ctx.result.items)
+          $util.qr($items.add($item))
+        #end
+        
+        #if($ctx.args.sortField && $ctx.args.sortField == "companyProfit")
+          #if($ctx.args.sortDirection && $ctx.args.sortDirection == "ASC")
+            $util.qr($items.sort({"sortKey": "companyProfit", "sortAscending": true}))
+          #else
+            $util.qr($items.sort({"sortKey": "companyProfit", "sortAscending": false}))
+          #end
+        #end
+        
+        {
+          "items": $util.toJson($items)
+        }
+
+Outputs:
+  GraphQLAPIEndpoint:
+    Description: The URL to the GraphQL API
+    Value: !GetAtt LeaderboardAPI.GraphQLUrl
+  
+  GraphQLAPIKey:
+    Description: The API Key for the GraphQL API
+    Value: !GetAtt LeaderboardAPIKey.ApiKey 

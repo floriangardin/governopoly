@@ -205,7 +205,7 @@ Options:
 {
   id: 'new_1',
   sender: 'CEO',
-  title: 'Welcome to Nine Lives',
+  title: 'Welcome aboard !',
   content: "Dear CDO, Welcome to our company. As you know, our current data challenges are a big concern for the board. We've been working on a new strategy to improve our data situation, and we'd love your input. What's your first move?",
 
   category: "strategy",

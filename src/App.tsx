@@ -12,10 +12,9 @@ import DefeatScreen from './components/DefeatScreen';
 export type GameState = 'start' | 'playing' | 'victory' | 'defeat';
 // Defeat reasons
 export type DefeatReason = 'budget' | 'dataQuality' | 'reputation' | 'burnout' | 'dataBreach';
-
 // Company context to be used throughout the game
 export const companyContext = {
-  name: "Nine Lives insurance.",
+  name: "The company",
   industry: "Insurance",
   employees: 1243,
   revenue: "$1.2 billion",

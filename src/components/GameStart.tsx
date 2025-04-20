@@ -42,11 +42,11 @@ const GameStart: React.FC<GameStartProps> = ({ onStart, companyContext }) => {
       
       <HeaderContainer>
       <CompanyLogoImage 
-          src="/og-image.png" 
+          src="/og-no-text.png" 
           alt="Nine Lives Insurance logo"
           style={{ width: '150px', height: '150px' }}
         />
-        <Title>Nine Lives Insurance</Title>
+        <Title>Who's the best CDO?</Title>
         <MusicButton onClick={toggleMusic} aria-label={isMusicMuted ? "Unmute music" : "Mute music"}>
           {isMusicMuted ? '🔇' : '🔊'}
         </MusicButton>
@@ -54,7 +54,7 @@ const GameStart: React.FC<GameStartProps> = ({ onStart, companyContext }) => {
       
       
       <Description>
-      You're the newly appointed Chief Data Officer. Your role is to guide Nine Lives through data chaos, one paw-step at a time. Expect surprises in your inbox and remember : data is your territory now.
+      You're the newly appointed Chief Data Officer. Your role is to guide your company through data chaos, one paw-step at a time. Expect surprises in your inbox and remember : data is your territory now.
       </Description>
     
       
@@ -308,7 +308,8 @@ const MusicButton = styled.button`
   transition: all 0.2s;
   outline: none;
   position: absolute;
-  right: 0;
+  right: -20px;
+  top: -20px;
   
   &:hover {
     background: #e8f7f8;

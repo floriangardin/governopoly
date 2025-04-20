@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, FC, ReactElement } from 'react';
 import styled from 'styled-components';
 import { DefeatReason } from '../App';
+import { leaderboardService } from '../services/LeaderboardService';
 
 interface DefeatScreenProps {
   reason: DefeatReason;
@@ -78,22 +79,75 @@ const createShareText = (stats: DefeatScreenProps['stats'], reason: string, comp
   return `I just got fired as CDO of ${companyContext.name} after ${monthsSurvived} months! My leadership led to a ${reason} crisis. Think you can do better? Play at www.whoisthebestcdo.com #DataGovernance #BusinessGame`;
 };
 
-const DefeatScreen: React.FC<DefeatScreenProps> = ({ reason, stats, onRestart, companyContext }) => {
+const DefeatScreen: FC<DefeatScreenProps> = ({ reason, stats, onRestart, companyContext }): ReactElement => {
   const reasonData = getReason(reason);
+  const [playerName, setPlayerName] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [leaderboardData, setLeaderboardData] = useState<any[]>([]);
+  const [leaderboardLoading, setLeaderboardLoading] = useState(false);
   
   const handleShare = () => {
     const shareText = createShareText(stats, reason, companyContext);
     
-    // Create LinkedIn sharing URL with the most current format
-    const websiteUrl = 'https://www.whoisthebestcdo.com';
-    const encodedText = encodeURIComponent(shareText);
-    const encodedUrl = encodeURIComponent(websiteUrl);
-    
     // LinkedIn pre-populated sharing URL (current format as of 2023-2024)
-    const linkedInShareUrl = `https://www.linkedin.com/feed/?shareActive&mini=true&text=${encodedText}&url=${encodedUrl}`;
+    const linkedInShareUrl = `https://www.linkedin.com/feed/?shareActive&mini=true&text=${encodeURIComponent(shareText)}&url=${encodeURIComponent('https://www.whoisthebestcdo.com')}`;
     
     // Open LinkedIn in a new tab
     window.open(linkedInShareUrl, '_blank');
+  };
+  
+  // Handle submitting score to leaderboard
+  const handleSubmitScore = async () => {
+    if (!playerName.trim()) return;
+    
+    setIsSubmitting(true);
+    
+    try {
+      // Prepare the score data
+      const scoreData = {
+        playerName: playerName.trim(),
+        companyProfit: stats.companyProfit,
+        cdoBudget: stats.cdoBudget,
+        dataQuality: stats.dataQuality,
+        reputation: stats.reputation,
+        company: companyContext.name,
+        defeat: reason,
+        timestamp: new Date().toISOString()
+      };
+      
+      // Use the leaderboardService to submit the score
+      const success = await leaderboardService.submitScore(scoreData);
+      
+      if (success) {
+        console.log('Score submitted successfully');
+        setIsSubmitted(true);
+        await fetchLeaderboard();
+      } else {
+        console.error('Failed to submit score');
+      }
+    } catch (error) {
+      console.error('Error submitting score:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+  
+  // Fetch leaderboard data
+  const fetchLeaderboard = async () => {
+    setLeaderboardLoading(true);
+    
+    try {
+      // Use the leaderboardService to fetch the leaderboard
+      const data = await leaderboardService.getLeaderboard(10);
+      setLeaderboardData(data);
+      setShowLeaderboard(true);
+    } catch (error) {
+      console.error('Error fetching leaderboard:', error);
+    } finally {
+      setLeaderboardLoading(false);
+    }
   };
   
   return (
@@ -125,6 +179,68 @@ const DefeatScreen: React.FC<DefeatScreenProps> = ({ reason, stats, onRestart, c
           <StatValue>{stats.reputation}%</StatValue>
         </StatItem>
       </StatsContainer>
+      
+      {!isSubmitted && !showLeaderboard && (
+        <LeaderboardSubmission>
+          <LeaderboardTitle>Submit Your Score</LeaderboardTitle>
+          <NameInput 
+            type="text" 
+            placeholder="Enter your name" 
+            value={playerName}
+            onChange={(e) => setPlayerName(e.target.value)}
+            maxLength={20}
+          />
+          <SubmitButton 
+            onClick={handleSubmitScore} 
+            disabled={isSubmitting || !playerName.trim()}
+          >
+            {isSubmitting ? 'Submitting...' : 'Submit to Leaderboard'}
+          </SubmitButton>
+          <ViewButton onClick={fetchLeaderboard}>
+            View Leaderboard
+          </ViewButton>
+        </LeaderboardSubmission>
+      )}
+      
+      {showLeaderboard && (
+        <LeaderboardContainer>
+          <LeaderboardTitle>CDO Leaderboard</LeaderboardTitle>
+          {leaderboardLoading ? (
+            <LoadingMessage>Loading leaderboard...</LoadingMessage>
+          ) : (
+            <LeaderboardTable>
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Name</th>
+                  <th>Company</th>
+                  <th>Profit</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {leaderboardData.map((entry, index) => (
+                  <tr key={entry.id}>
+                    <td>{index + 1}</td>
+                    <td>{entry.playerName}</td>
+                    <td>{entry.company}</td>
+                    <td>{formatCurrency(entry.companyProfit)}</td>
+                    <td>{entry.defeat ? `Defeated (${entry.defeat})` : 'Survived'}</td>
+                  </tr>
+                ))}
+                {leaderboardData.length === 0 && (
+                  <tr>
+                    <td colSpan={5}>No scores submitted yet. Be the first!</td>
+                  </tr>
+                )}
+              </tbody>
+            </LeaderboardTable>
+          )}
+          <CloseButton onClick={() => setShowLeaderboard(false)}>
+            Close Leaderboard
+          </CloseButton>
+        </LeaderboardContainer>
+      )}
       
       <ButtonContainer>
         <ShareButton onClick={handleShare}>
@@ -265,6 +381,130 @@ const RestartButton = styled.button`
 const FooterText = styled.p`
   font-size: 14px;
   color: #5f6368;
+`;
+
+const LeaderboardSubmission = styled.div`
+  width: 100%;
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  text-align: center;
+`;
+
+const LeaderboardTitle = styled.h3`
+  font-size: 20px;
+  color: #35adb6;
+  margin-bottom: 15px;
+`;
+
+const NameInput = styled.input`
+  padding: 10px 15px;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  font-size: 16px;
+  width: 100%;
+  max-width: 300px;
+  margin-bottom: 15px;
+  
+  &:focus {
+    border-color: #35adb6;
+    outline: none;
+  }
+`;
+
+const SubmitButton = styled.button`
+  background: #35adb6;
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-right: 10px;
+  
+  &:hover {
+    background: #2d9198;
+  }
+  
+  &:disabled {
+    background: #9aa0a6;
+    cursor: not-allowed;
+  }
+`;
+
+const ViewButton = styled.button`
+  background: #f3ad41;
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+  
+  &:hover {
+    background: #e09c24;
+  }
+`;
+
+const LeaderboardContainer = styled.div`
+  width: 100%;
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+`;
+
+const LeaderboardTable = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 15px;
+  
+  th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #dadce0;
+  }
+  
+  th {
+    font-weight: 600;
+    color: #5f6368;
+  }
+  
+  tr:last-child td {
+    border-bottom: none;
+  }
+  
+  tr:nth-child(even) {
+    background-color: rgba(53, 173, 182, 0.05);
+  }
+`;
+
+const LoadingMessage = styled.div`
+  padding: 20px;
+  text-align: center;
+  color: #5f6368;
+`;
+
+const CloseButton = styled.button`
+  background: none;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  color: #5f6368;
+  font-size: 14px;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  
+  &:hover {
+    background: #e8f7f8;
+    border-color: #35adb6;
+    color: #35adb6;
+  }
 `;
 
 export default DefeatScreen; 
