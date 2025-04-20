@@ -66,12 +66,12 @@ const getFeedback = (cdoBudget: number, companyProfit: number, company: GameOver
 const createShareText = (stats: GameOverProps['stats'], companyContext: GameOverProps['companyContext']): string => {
   const profitInMillions = (stats.companyProfit / 1000000).toFixed(1);
   
-  if (stats.companyProfit >= 10000000) {
-    return `I just completed a year as CDO of ${companyContext.name} with an impressive company profit of $${profitInMillions}M! My data leadership skills are top-notch! Try to beat my score at www.governopoly.io #DataGovernance #Governopoly`;
-  } else if (stats.companyProfit >= 5000000) {
-    return `I led ${companyContext.name} to a solid $${profitInMillions}M profit as CDO! Data governance is challenging but rewarding. See if you can do better at www.governopoly.io #DataGovernance #Governopoly`;
+  if (stats.companyProfit >= 4000000) {
+    return `I just completed a year as CDO of ${companyContext.name} with an impressive company profit of $${profitInMillions}M! My data leadership skills are top-notch! Try to beat my score at www.whoisthebestcdo.com #DataGovernance #BusinessGame`;
+  } else if (stats.companyProfit >= 2000000) {
+    return `I led ${companyContext.name} to a solid $${profitInMillions}M profit as CDO! Data governance is challenging but rewarding. See if you can do better at www.whoisthebestcdo.com #DataGovernance #BusinessGame`;
   } else {
-    return `I survived a year as CDO at ${companyContext.name} with $${profitInMillions}M in company profit. Data leadership is tough! Try your hand at www.governopoly.io #DataGovernance #Governopoly`;
+    return `I survived a year as CDO at ${companyContext.name} with $${profitInMillions}M in company profit. Data leadership is tough! Try your chance at www.whoisthebestcdo.com #DataGovernance #BusinessGame`;
   }
 };
 

@@ -75,7 +75,7 @@ const getReason = (reason: DefeatScreenProps['reason']): { title: string; descri
 const createShareText = (stats: DefeatScreenProps['stats'], reason: string, companyContext: DefeatScreenProps['companyContext']): string => {
   const monthsSurvived = Math.floor(Math.random() * 11) + 1; // Simulate random months survived
   
-  return `I just got fired as CDO of ${companyContext.name} after ${monthsSurvived} months in Governopoly! My leadership led to a ${reason} crisis. Think you can do better? Play at www.governopoly.io #DataGovernance #Governopoly`;
+  return `I just got fired as CDO of ${companyContext.name} after ${monthsSurvived} months! My leadership led to a ${reason} crisis. Think you can do better? Play at www.whoisthebestcdo.com #DataGovernance #BusinessGame`;
 };
 
 const DefeatScreen: React.FC<DefeatScreenProps> = ({ reason, stats, onRestart, companyContext }) => {
