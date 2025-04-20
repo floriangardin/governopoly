@@ -61,7 +61,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
   const emailTimerRef = useRef<NodeJS.Timeout | null>(null);
   const gameTimeRef = useRef<number>(0);
   const lastEmailTimeRef = useRef<number>(0);
-  const totalGameTime = 180000; // 3 minutes in milliseconds
+  const totalGameTime = 240000; // 4 minutes in milliseconds
   const emailEvery = 20000;
   const urgentTotalTime = 20000;
   // Track urgent email timers
@@ -221,7 +221,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
       
       // Only update time if game has started
       if (gameStarted) {
-        // Calculate remaining time in seconds (180 seconds total)
+        // Calculate remaining time in seconds
         const timeElapsed = Math.floor(gameTimeRef.current / 1000);
         const timeRemaining = Math.max(0, totalGameTime / 1000 - timeElapsed);
         setRemainingTime(timeRemaining);
