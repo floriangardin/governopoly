@@ -19,7 +19,7 @@ const SOUNDS = {
 const audioInstances: { [key: string]: HTMLAudioElement } = {};
 
 // Mute state (persisted in localStorage)
-let isMusicMuted = localStorage.getItem('musicMuted') === 'true';
+let soundMuted = localStorage.getItem('soundMuted') === 'true';
 
 // Track if audio playback has been permitted by user interaction
 let isAudioEnabled = false;
@@ -36,7 +36,7 @@ const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 const createSilentAudio = () => {
   const audio = new Audio();
   // A super short silent MP3 data URL 
-  audio.src = 'data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4LjMyLjEwNAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAADwADAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMD/8AAEQgAAQABAwEiAAIRAQMRAf/EAB8AAAEFAQEBAQEBAAAAAAAAAAABAgMEBQYHCAkKC//EALUQAAIBAwMCBAMFBQQEAAABfQECAwAEEQUSITFBBhNRYQcicRQygZGhCCNCscEVUtHwJDNicoIJChYXGBkaJSYnKCkqNDU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6g4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TLzM/Q0dLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD3+iiigD//2Q==';
+  audio.src = 'data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4LjMyLjEwNAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAADwADAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMD/8AAEQgAAQABAwEiAAIRAQMRAf/EAB8AAAEFAQEBAQEBAAAAAAAAAAABAgMEBQYHCAkKC//EALUQAAIBAwMCBAMFBQQEAAABfQECAwAEEQUSITFBBhNRYQcicRQygZGhCCNCscEVUtHwJDNicoIJChYXGBkaJSYnKCkqNDU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6g4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TLzM/Q0dLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD3+iiigD//2Q==';
   audio.preload = 'auto';
   audio.volume = 0;
   audioInstances['__silent__'] = audio;
@@ -51,19 +51,33 @@ const unlockMobileAudio = () => {
   // This helps with iOS Safari which is especially strict
   const sounds = [
     audioInstances['__silent__'],
-    new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA')
+    new Audio('data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4LjMyLjEwNAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAADwADAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMD/8AAEQgAAQABAwEiAAIRAQMRAf/EAB8AAAEFAQEBAQEBAAAAAAAAAAABAgMEBQYHCAkKC//EALUQAAIBAwMCBAMFBQQEAAABfQECAwAEEQUSITFBBhNRYQcicRQygZGhCCNCscEVUtHwJDNicoIJChYXGBkaJSYnKCkqNDU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6g4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TLzM/Q0dLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD3+iiigD//2Q==')
   ];
   
-  // Play them all
+  // Play them all with promise chaining to ensure they play in sequence
+  let playPromise = Promise.resolve();
   sounds.forEach(sound => {
-    sound.play().catch(e => console.warn('Failed to play unlock sound:', e));
-    
-    // iOS requires user interaction for each play
-    // This helps with some versions of iOS
-    setTimeout(() => {
-      sound.play().catch(e => console.warn('Failed second unlock attempt:', e));
-    }, 100);
+    playPromise = playPromise
+      .then(() => {
+        if (sound.paused) {
+          // Set volume to 0 to ensure it's silent
+          sound.volume = 0;
+          return sound.play()
+            .catch(e => console.warn('Failed to play unlock sound:', e));
+        }
+        return Promise.resolve();
+      });
   });
+  
+  // Try again with a slight delay - this helps on some iOS versions
+  setTimeout(() => {
+    sounds.forEach(sound => {
+      if (sound.paused) {
+        sound.volume = 0;
+        sound.play().catch(() => {});
+      }
+    });
+  }, 200);
 };
 
 // Handler for user interaction to enable audio
@@ -192,8 +206,8 @@ const initAudio = (key: string, src: string, loop: boolean = false, volume: numb
 export const playSound = (key: string, loop: boolean = false, volume: number = 0.5): void => {
   const soundType: SoundType = key.startsWith('main') ? 'music' : 'effects';
   
-  // Check if this type of sound is muted
-  if ( isMusicMuted) {
+  // Check if sound is muted
+  if (soundMuted) {
     // Even if muted, still track the music that would be playing
     if (soundType === 'music') {
       activeMusic = { key, volume };
@@ -277,100 +291,100 @@ export const stopSound = (key: string): void => {
 
 // Toggle mute for a sound type
 export const toggleMute = (type: SoundType): boolean => {
-    isMusicMuted = !isMusicMuted;
-    localStorage.setItem('musicMuted', isMusicMuted.toString());
+  soundMuted = !soundMuted;
+  localStorage.setItem('soundMuted', soundMuted.toString());
+  
+  if (soundMuted) {
+    // Pause all music when muting
+    Object.keys(SOUNDS.music).forEach(key => {
+      if (audioInstances[key]) {
+        audioInstances[key].pause();
+      }
+    });
+  } else if (activeMusic) {
+    // When unmuting, restart the active music - make this more reliable
+    const currentMusic = activeMusic; // Create a local reference that TypeScript knows is not null
+    console.log(`Unmuting: Attempting to restart ${currentMusic.key}`);
     
-    if (isMusicMuted) {
-      // Pause all music when muting
+    // Try to play directly using the audio element to bypass permission checks
+    const src = SOUNDS.music[currentMusic.key as keyof typeof SOUNDS.music];
+    if (src && isAudioEnabled) {
+      const audio = initAudio(currentMusic.key, src, true, currentMusic.volume);
+      
+      // Stop other music first
       Object.keys(SOUNDS.music).forEach(key => {
-        if (audioInstances[key]) {
+        if (key !== currentMusic.key && audioInstances[key]) {
           audioInstances[key].pause();
+          audioInstances[key].currentTime = 0;
         }
       });
-    } else if (activeMusic) {
-      // When unmuting, restart the active music - make this more reliable
-      const currentMusic = activeMusic; // Create a local reference that TypeScript knows is not null
-      console.log(`Unmuting: Attempting to restart ${currentMusic.key}`);
       
-      // Try to play directly using the audio element to bypass permission checks
-      const src = SOUNDS.music[currentMusic.key as keyof typeof SOUNDS.music];
-      if (src && isAudioEnabled) {
-        const audio = initAudio(currentMusic.key, src, true, currentMusic.volume);
+      // On mobile, we may need to wait for another interaction
+      if (isMobile) {
+        // Create a one-time event to play on next interaction
+        const playOnNextInteraction = () => {
+          audio.play().catch(e => {
+            console.error('Still failed to play after unmute:', e);
+            isAudioEnabled = false;
+            pendingAudioQueue.push({ 
+              key: currentMusic.key, 
+              loop: true, 
+              volume: currentMusic.volume 
+            });
+            addUnlockListeners();
+          });
+          
+          // Remove this listener after first interaction
+          document.removeEventListener('touchstart', playOnNextInteraction);
+          document.removeEventListener('touchend', playOnNextInteraction);
+          document.removeEventListener('click', playOnNextInteraction);
+        };
         
-        // Stop other music first
-        Object.keys(SOUNDS.music).forEach(key => {
-          if (key !== currentMusic.key && audioInstances[key]) {
-            audioInstances[key].pause();
-            audioInstances[key].currentTime = 0;
-          }
+        // Add listeners for the next interaction
+        document.addEventListener('touchstart', playOnNextInteraction, { once: true });
+        document.addEventListener('touchend', playOnNextInteraction, { once: true });
+        document.addEventListener('click', playOnNextInteraction, { once: true });
+        
+        // Also try to play now, it might work
+        audio.play().catch(error => {
+          console.log('Deferring playback to next interaction');
+          // The error is expected, and we're already set up to handle it on next interaction
         });
-        
-        // On mobile, we may need to wait for another interaction
-        if (isMobile) {
-          // Create a one-time event to play on next interaction
-          const playOnNextInteraction = () => {
-            audio.play().catch(e => {
-              console.error('Still failed to play after unmute:', e);
-              isAudioEnabled = false;
-              pendingAudioQueue.push({ 
-                key: currentMusic.key, 
-                loop: true, 
-                volume: currentMusic.volume 
-              });
-              addUnlockListeners();
+      } else {
+        // On desktop, we can just try to play directly
+        audio.play().catch(error => {
+          console.error(`Failed to restart music after unmuting:`, error);
+          if (error.name === 'NotAllowedError') {
+            // If audio permission denied, just queue for later
+            isAudioEnabled = false;
+            pendingAudioQueue.push({ 
+              key: currentMusic.key, 
+              loop: true, 
+              volume: currentMusic.volume 
             });
             
-            // Remove this listener after first interaction
-            document.removeEventListener('touchstart', playOnNextInteraction);
-            document.removeEventListener('touchend', playOnNextInteraction);
-            document.removeEventListener('click', playOnNextInteraction);
-          };
-          
-          // Add listeners for the next interaction
-          document.addEventListener('touchstart', playOnNextInteraction, { once: true });
-          document.addEventListener('touchend', playOnNextInteraction, { once: true });
-          document.addEventListener('click', playOnNextInteraction, { once: true });
-          
-          // Also try to play now, it might work
-          audio.play().catch(error => {
-            console.log('Deferring playback to next interaction');
-            // The error is expected, and we're already set up to handle it on next interaction
-          });
-        } else {
-          // On desktop, we can just try to play directly
-          audio.play().catch(error => {
-            console.error(`Failed to restart music after unmuting:`, error);
-            if (error.name === 'NotAllowedError') {
-              // If audio permission denied, just queue for later
-              isAudioEnabled = false;
-              pendingAudioQueue.push({ 
-                key: currentMusic.key, 
-                loop: true, 
-                volume: currentMusic.volume 
-              });
-              
-              // Re-add event listeners
-              addUnlockListeners();
-            }
-          });
-        }
-      } else if (!isAudioEnabled) {
-        // If audio isn't enabled yet, make sure it's in the queue
-        pendingAudioQueue.push({ 
-          key: currentMusic.key, 
-          loop: true, 
-          volume: currentMusic.volume 
+            // Re-add event listeners
+            addUnlockListeners();
+          }
         });
       }
+    } else if (!isAudioEnabled) {
+      // If audio isn't enabled yet, make sure it's in the queue
+      pendingAudioQueue.push({ 
+        key: currentMusic.key, 
+        loop: true, 
+        volume: currentMusic.volume 
+      });
     }
-    
-    return isMusicMuted;
+  }
   
+  // To maintain the API, return the appropriate value based on type
+  return soundMuted;
 };
 
 // Check if a sound type is muted
 export const isMuted = (type: SoundType): boolean => {
-  return isMusicMuted;
+  return soundMuted;
 };
 
 // Get current active music
@@ -385,8 +399,7 @@ export const isAudioReady = (): boolean => {
 
 // React hook for using sound service in components
 export const useSoundService = () => {
-  const [musicMuted, setMusicMuted] = useState<boolean>(isMusicMuted);
-  const [effectsMuted, setEffectsMuted] = useState<boolean>(isMusicMuted);
+  const [localSoundMuted, setLocalSoundMuted] = useState<boolean>(soundMuted);
   const [audioReady, setAudioReady] = useState<boolean>(isAudioEnabled);
   
   // Update audio ready state when it changes
@@ -421,13 +434,13 @@ export const useSoundService = () => {
   // Handle toggling music mute
   const toggleMusic = () => {
     const newState = toggleMute('music');
-    setMusicMuted(newState);
+    setLocalSoundMuted(newState);
   };
   
   // Handle toggling effects mute
   const toggleEffects = () => {
     const newState = toggleMute('effects');
-    setEffectsMuted(newState);
+    setLocalSoundMuted(newState);
   };
   
   return {
@@ -435,8 +448,8 @@ export const useSoundService = () => {
     stopSound,
     toggleMusic,
     toggleEffects,
-    isMusicMuted: musicMuted,
-    isEffectsMuted: effectsMuted,
+    isMusicMuted: localSoundMuted,
+    isEffectsMuted: localSoundMuted,
     audioReady
   };
 }; 

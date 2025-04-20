@@ -256,7 +256,6 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
 
   // MAIN LOOP
   useEffect(() => {
-    console.log('Game started');
     if (!gameStarted) return; // Don't start the game clock until the game is started
     
     // Create a separate interval for emails to avoid interference with the timer
@@ -552,18 +551,18 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
           💡 Increase your reputation (⭐) to receive more budget!
         </BudgetWarning>
       )}
-      <Header isMobile={isMobile}>
+      <Header $isMobile={isMobile}>
         <StatusItem>
           <StatusLabel>💰 CDO Budget:</StatusLabel>
-          <StatusValue>{formatCurrency(cdoBudget)}</StatusValue>
+          <StatusValue $profit={companyProfit >= 0}>{formatCurrency(cdoBudget)}</StatusValue>
         </StatusItem>
         <StatusItem>
           <StatusLabel>📈 Company Profit:</StatusLabel>
-          <StatusValue profit={companyProfit >= 0}>{formatCurrency(companyProfit)}</StatusValue>
+          <StatusValue $profit={companyProfit >= 0}>{formatCurrency(companyProfit)}</StatusValue>
         </StatusItem>
         <MetricItem>
           <StatusLabel>⏱️ Time Remaining:</StatusLabel>
-          <TimeDisplay gameStarted={gameStarted}>{gameStarted ? formatTime(remainingTime) : "--:--"}</TimeDisplay>
+          <TimeDisplay $gameStarted={gameStarted}>{gameStarted ? formatTime(remainingTime) : "--:--"}</TimeDisplay>
         </MetricItem>
         <MetricItem>
           <MetricLabel>📊 Data Quality:</MetricLabel>
@@ -585,7 +584,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
       </Header>
       
       <ContentContainer>
-        <InboxPanel isMobile={isMobile} showEmailList={showEmailList}>
+        <InboxPanel $isMobile={isMobile} $showEmailList={showEmailList}>
           <InboxHeader>
             {inbox.length < maxEmails - 3 && <InboxTitle>Inbox ({inbox.length}/{maxEmails})</InboxTitle>}
             {inbox.length >= maxEmails - 3 && <InboxTitle style={{ color: '#cf5628' }}>Inbox ({inbox.length}/{maxEmails})</InboxTitle>}
@@ -599,9 +598,9 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
               inbox.slice().reverse().map(email => (
                 <EmailItem 
                   key={email.id} 
-                  isSelected={selectedEmail?.id === email.id}
-                  isUrgent={email.isUrgent}
-                  isCurrentUrgent={email.isUrgent && getTimeRemaining(email.id) <= 5}
+                  $isSelected={selectedEmail?.id === email.id}
+                  $isUrgent={email.isUrgent}
+                  $isCurrentUrgent={email.isUrgent && getTimeRemaining(email.id) <= 5}
                   onClick={() => handleEmailSelect(email)}
                 >
                   {email.isUrgent && (
@@ -611,7 +610,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
                   )}
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <EmailTitle>{email.title}</EmailTitle>
-                    <EmailCategory category={email.category}>
+                    <EmailCategory $category={email.category}>
                       {email.category}
                     </EmailCategory>
                   </div>
@@ -623,7 +622,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
           </EmailList>
         </InboxPanel>
         
-        <MainPanel isMobile={isMobile} showEmailList={showEmailList}>
+        <MainPanel $isMobile={isMobile} $showEmailList={showEmailList}>
           {selectedEmail ? (
             <>
               <EmailHeader>
@@ -659,7 +658,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
                         key={choice.id}
                         onClick={() => canSelect && handleChoiceSelect(choice)}
                         disabled={!canSelect}
-                        isDisabled={!canSelect}
+                        $isDisabled={!canSelect}
                       >
                         <ResponseButtonContent>
                           <div>{choice.text}</div>
@@ -667,7 +666,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
                             {choice.outcome.budgetImpact !== 0 && (
                               <ResponseImpact 
                                 color={formatImpactWithColor(choice.outcome.budgetImpact).color}
-                                isUnavailable={!canSelect && choice.outcome.budgetImpact < 0 && Math.abs(choice.outcome.budgetImpact) > cdoBudget}
+                                $isUnavailable={!canSelect && choice.outcome.budgetImpact < 0 && Math.abs(choice.outcome.budgetImpact) > cdoBudget}
                               >
                                 💰 {formatImpactWithColor(choice.outcome.budgetImpact).text}
                               </ResponseImpact>
@@ -682,7 +681,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
                             {choice.outcome.dataQualityImpact !== 0 && (
                               <ResponseImpact 
                                 color={formatImpactWithColor(choice.outcome.dataQualityImpact, true).color}
-                                isUnavailable={!canSelect && choice.outcome.dataQualityImpact < 0 && Math.abs(choice.outcome.dataQualityImpact) > dataQuality}
+                                $isUnavailable={!canSelect && choice.outcome.dataQualityImpact < 0 && Math.abs(choice.outcome.dataQualityImpact) > dataQuality}
                               >
                                 📊 {formatImpactWithColor(choice.outcome.dataQualityImpact, true).text}
                               </ResponseImpact>
@@ -691,7 +690,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
                             {choice.outcome.reputationImpact !== 0 && (
                               <ResponseImpact 
                                 color={formatImpactWithColor(choice.outcome.reputationImpact, true).color}
-                                isUnavailable={!canSelect && choice.outcome.reputationImpact < 0 && Math.abs(choice.outcome.reputationImpact) > reputation}
+                                $isUnavailable={!canSelect && choice.outcome.reputationImpact < 0 && Math.abs(choice.outcome.reputationImpact) > reputation}
                               >
                                 ⭐ {formatImpactWithColor(choice.outcome.reputationImpact, true).text}
                               </ResponseImpact>
@@ -786,7 +785,7 @@ const Container = styled.div`
 `;
 
 interface HeaderProps {
-  isMobile: boolean;
+  $isMobile: boolean;
 }
 
 const Header = styled.div<HeaderProps>`
@@ -803,7 +802,7 @@ const Header = styled.div<HeaderProps>`
     padding: 10px;
   }
   
-  ${props => props.isMobile && `
+  ${props => props.$isMobile && `
     & > div {
       flex: 1 0 45%;
       min-width: auto;
@@ -829,13 +828,13 @@ const StatusLabel = styled.div`
 `;
 
 interface StatusValueProps {
-  profit?: boolean;
+  $profit?: boolean;
 }
 
 const StatusValue = styled.div<StatusValueProps>`
-  font-size: 16px;
+  font-size: 18px;
   font-weight: bold;
-  color: ${props => props.profit === false ? '#cf5628' : '#3c4043'};
+  color: ${props => props.$profit !== undefined ? (props.$profit ? 'green' : 'red') : '#202124'};
   
   @media (max-width: 768px) {
     font-size: 14px;
@@ -908,8 +907,8 @@ const ContentContainer = styled.div`
 `;
 
 interface InboxPanelProps {
-  isMobile: boolean;
-  showEmailList: boolean;
+  $isMobile: boolean;
+  $showEmailList: boolean;
 }
 
 const InboxPanel = styled.div<InboxPanelProps>`
@@ -926,7 +925,7 @@ const InboxPanel = styled.div<InboxPanelProps>`
     left: 0;
     height: 100%;
     z-index: 1;
-    display: ${props => props.isMobile && !props.showEmailList ? 'none' : 'flex'};
+    display: ${props => props.$isMobile && !props.$showEmailList ? 'none' : 'flex'};
   }
 `;
 
@@ -961,31 +960,31 @@ const NoEmails = styled.div`
 `;
 
 interface EmailItemProps {
-  isSelected: boolean;
-  isUrgent: boolean;
-  isCurrentUrgent?: boolean;
+  $isSelected: boolean;
+  $isUrgent: boolean;
+  $isCurrentUrgent?: boolean;
 }
 
 const EmailItem = styled.div<EmailItemProps>`
   padding: 12px 15px;
-  background: ${props => props.isSelected ? '#e8f7f8' : 'white'};
-  border-left: ${props => props.isUrgent ? '4px solid #cf5628' : '4px solid transparent'};
+  background: ${props => props.$isSelected ? '#e8f7f8' : 'white'};
+  border-left: ${props => props.$isUrgent ? '4px solid #cf5628' : '4px solid transparent'};
   border-radius: 8px;
   margin-bottom: 10px;
   cursor: pointer;
   transition: all 0.2s;
   position: relative;
   
-  ${props => props.isUrgent && `
+  ${props => props.$isUrgent && `
     animation: urgentPulse 1s infinite alternate;
   `}
   
-  ${props => props.isCurrentUrgent && `
+  ${props => props.$isCurrentUrgent && `
     animation: vibrate 0.3s infinite;
   `}
   
   &:hover {
-    background: ${props => props.isSelected ? '#e8f7f8' : '#f5f5f5'};
+    background: ${props => props.$isSelected ? '#e8f7f8' : '#f5f5f5'};
   }
   
   @keyframes urgentPulse {
@@ -1050,8 +1049,8 @@ const EmailPreview = styled.div`
 `;
 
 interface MainPanelProps {
-  isMobile: boolean;
-  showEmailList: boolean;
+  $isMobile: boolean;
+  $showEmailList: boolean;
 }
 
 const MainPanel = styled.div<MainPanelProps>`
@@ -1067,8 +1066,8 @@ const MainPanel = styled.div<MainPanelProps>`
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: ${props => props.isMobile && !props.showEmailList ? '2' : '0'};
-    display: ${props => props.isMobile && props.showEmailList ? 'none' : 'flex'};
+    z-index: ${props => props.$isMobile && !props.$showEmailList ? '2' : '0'};
+    display: ${props => props.$isMobile && props.$showEmailList ? 'none' : 'flex'};
   }
 `;
 
@@ -1183,26 +1182,26 @@ const ResponseTitle = styled.div`
 `;
 
 interface ResponseButtonProps {
-  isDisabled?: boolean;
+  $isDisabled?: boolean;
 }
 
 const ResponseButton = styled.button<ResponseButtonProps>`
   width: 100%;
   padding: 12px 15px;
-  background: ${props => props.isDisabled ? '#f1f1f1' : '#f8f9fa'};
-  border: 1px solid ${props => props.isDisabled ? '#dadce0' : '#dadce0'};
+  background: ${props => props.$isDisabled ? '#f1f1f1' : '#f8f9fa'};
+  border: 1px solid ${props => props.$isDisabled ? '#dadce0' : '#dadce0'};
   border-radius: 8px;
   font-size: 14px;
   text-align: left;
-  color: ${props => props.isDisabled ? '#9aa0a6' : '#202124'};
+  color: ${props => props.$isDisabled ? '#9aa0a6' : '#202124'};
   margin-bottom: 10px;
-  cursor: ${props => props.isDisabled ? 'not-allowed' : 'pointer'};
-  opacity: ${props => props.isDisabled ? 0.8 : 1};
+  cursor: ${props => props.$isDisabled ? 'not-allowed' : 'pointer'};
+  opacity: ${props => props.$isDisabled ? 0.8 : 1};
   transition: all 0.2s;
   
   &:hover {
-    background: ${props => props.isDisabled ? '#f1f1f1' : '#e8f7f8'};
-    border-color: ${props => props.isDisabled ? '#dadce0' : '#35adb6'};
+    background: ${props => props.$isDisabled ? '#f1f1f1' : '#e8f7f8'};
+    border-color: ${props => props.$isDisabled ? '#dadce0' : '#35adb6'};
   }
   
   &:last-child {
@@ -1224,15 +1223,15 @@ const ResponseImpacts = styled.div`
 
 interface ResponseImpactProps {
   color: string;
-  isUnavailable?: boolean;
+  $isUnavailable?: boolean;
 }
 
 const ResponseImpact = styled.span<ResponseImpactProps>`
-  color: ${props => props.isUnavailable ? '#cf0000' : props.color};
-  font-weight: ${props => props.isUnavailable ? 'bold' : 'normal'};
+  color: ${props => props.$isUnavailable ? '#cf0000' : props.color};
+  font-weight: ${props => props.$isUnavailable ? 'bold' : 'normal'};
   font-size: 13px;
-  background: ${props => props.isUnavailable ? 'rgba(207, 0, 0, 0.1)' : 'transparent'};
-  padding: ${props => props.isUnavailable ? '2px 4px' : '0'};
+  background: ${props => props.$isUnavailable ? 'rgba(207, 0, 0, 0.1)' : 'transparent'};
+  padding: ${props => props.$isUnavailable ? '2px 4px' : '0'};
   border-radius: 4px;
 `;
 
@@ -1388,23 +1387,23 @@ const MusicButton = styled.button`
   }
 `;
 
-const TimeDisplay = styled.div<{gameStarted: boolean}>`
+const TimeDisplay = styled.div<{$gameStarted: boolean}>`
   font-size: 16px;
   font-weight: bold;
-  color: ${props => props.gameStarted && props.children === '0:00' ? '#cf5628' : '#3c4043'};
+  color: ${props => props.$gameStarted && props.children === '0:00' ? '#cf5628' : '#3c4043'};
   
   @media (max-width: 768px) {
     font-size: 14px;
   }
 `;
 
-const EmailCategory = styled.span<{ category: string }>`
+const EmailCategory = styled.span<{ $category: string }>`
   font-size: 12px;
   padding: 2px 8px;
   border-radius: 12px;
   margin-left: 8px;
   background: ${props => {
-    switch (props.category.toLowerCase()) {
+    switch (props.$category.toLowerCase()) {
       case 'budget': return '#f3ad41';    // Orange
       case 'databreach': return '#cf5628'; // Red
       case 'dataquality': return '#35adb6'; // Same blue as the indicator
