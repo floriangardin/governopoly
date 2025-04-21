@@ -687,7 +687,7 @@ const BudgetEmails: Email[] = [
   id: "email-009",
   sender: "CEO Office",
   title: "Budget Approved: Keep Modernizing Our Data Infrastructure",
-  content: "Thanks to your team’s foundational work, we’re in a strong position to upgrade our data systems. I’ve approved additional budget to help you modernize our claims, underwriting, and risk data pipelines. Choose your path.",
+  content: "Thanks to your team’s foundational work, we’re in a strong position to upgrade our data systems. I’ve approved additional budget to help you modernize our customer, product, and risk data pipelines. Choose your path.",
   category: "budget",
   minimumReputation: 50,
   maximumDataQuality: 100,
@@ -697,7 +697,7 @@ const BudgetEmails: Email[] = [
       id: 1,
       text: "Deploy a full modern data stack across all business units",
       outcome: {
-        description: "Claims, underwriting, and compliance teams run faster and smarter, but will require further help for quality.",
+        description: "Marketing, sales, and compliance teams run faster and smarter, but will require further help for quality.",
         budgetImpact: 500000,
         profitImpact: 100000,
         dataQualityImpact: -10,
@@ -706,7 +706,7 @@ const BudgetEmails: Email[] = [
     },
     {
       id: 2,
-      text: "Pilot new architecture with claims data first",
+      text: "Pilot new architecture with customer data first",
       outcome: {
         description: "You validate improvements with real results in one key area.",
         budgetImpact: 300000,
@@ -732,8 +732,8 @@ const BudgetEmails: Email[] = [
 {
   id: "email-010",
   sender: "CEO Office",
-  title: "Budget Released for Our Claims and Risk Data",
-  content: "With increasing data usage across underwriting and claims, we need to secure our systems. I’ve released additional funds to strengthen data recovery and backup : your move on how to use them.",
+  title: "Budget Released for Our Sensitive Data",
+  content: "With increasing data usage across marketing and sales, we need to secure our systems. I’ve released additional funds to strengthen data recovery and backup : your move on how to use them.",
   category: "budget",
   minimumReputation: 80,
   maximumDataQuality: 100,
@@ -743,7 +743,7 @@ const BudgetEmails: Email[] = [
       id: 1,
       text: "Partner with a dedicated disaster recovery vendor",
       outcome: {
-        description: "Claims and risk data are fully protected with industry-best SLAs.",
+        description: "Customers data are fully protected with industry-best SLAs.",
         budgetImpact: 500000,
         profitImpact: 300000,
         dataQualityImpact: -10,
@@ -1023,7 +1023,7 @@ const BudgetEmails: Email[] = [
       id: 'quality_4',
       sender: 'Data Warehouse Team',
       title: 'Critical Data Quality Alert in Enterprise Systems',
-      content: `Our data quality monitoring has detected a significant increase in data errors across our enterprise systems. Error rates have jumped from 2% to 17% in the last month, with particular issues in claims handling and risks management tables.
+      content: `Our data quality monitoring has detected a significant increase in data errors across our enterprise systems. Error rates have jumped from 2% to 17% in the last month, with particular issues in customer support tables.
   
   Options:
   1. Roll back to last month's stable data model and reprocess transactions
