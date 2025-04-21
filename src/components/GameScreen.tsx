@@ -27,7 +27,7 @@ interface GameScreenProps {
 const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onGameVictory, onGameDefeat, companyContext }) => {
   // Game state
   const [cdoBudget, setCdoBudget] = useState(initialScore);
-  const [companyProfit, setCompanyProfit] = useState(260000);
+  const [companyProfit, setCompanyProfit] = useState(0);
   const [month, setMonth] = useState(initialMonth);
   const [dataQuality, setDataQuality] = useState(0); // 0-100 scale
   const [reputation, setReputation] = useState(0); // 0-100 scale
