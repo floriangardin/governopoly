@@ -27,7 +27,7 @@ interface GameScreenProps {
 const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onGameVictory, onGameDefeat, companyContext }) => {
   // Game state
   const [cdoBudget, setCdoBudget] = useState(initialScore);
-  const [companyProfit, setCompanyProfit] = useState(0);
+  const [companyProfit, setCompanyProfit] = useState(260000);
   const [month, setMonth] = useState(initialMonth);
   const [dataQuality, setDataQuality] = useState(0); // 0-100 scale
   const [reputation, setReputation] = useState(0); // 0-100 scale
@@ -261,6 +261,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
     // Create a separate interval for emails to avoid interference with the timer
     const gameInterval = setInterval(() => {
       gameTimeRef.current += 100; // 100ms tick
+
 
       // Check if we should display the 'new_1' email
       // This is a special email that should be shown at a specific time

@@ -82,11 +82,11 @@ class LeaderboardService {
   /**
    * Fetch leaderboard data - completely rewritten with minimal query
    */
-  async getLeaderboard(limit: number = 10): Promise<LeaderboardEntry[]> {
+  async getLeaderboard(limit: number = 50): Promise<LeaderboardEntry[]> {
     if (!this.isConfigured()) return [];
     
     try {
-      // Absolute minimum query with no optional parameters
+      // Simpler query with no variables
       const query = `
         query {
           listLeaderboardEntries {
@@ -105,6 +105,7 @@ class LeaderboardService {
         }
       `;
       
+      
       const response = await fetch(this.endpoint!, {
         method: 'POST',
         headers: {
@@ -117,18 +118,62 @@ class LeaderboardService {
       const result = await response.json();
       
       if (result.errors) {
-        console.error('Error fetching leaderboard:', result.errors);
         return [];
       }
       
-      // Sort and limit client-side
-      const entries = result.data.listLeaderboardEntries.items || [];
-      return entries
+      // Ensure we have items before trying to process them
+      const items = result.data?.listLeaderboardEntries?.items;
+      
+      if (!items || !Array.isArray(items)) {
+        return [];
+      }
+      
+      // Sort and limit in frontend
+      return items
         .sort((a: LeaderboardEntry, b: LeaderboardEntry) => b.companyProfit - a.companyProfit)
         .slice(0, limit);
     } catch (error) {
-      console.error('Error fetching leaderboard:', error);
       return [];
+    }
+  }
+  
+  /**
+   * Test function to debug leaderboard data retrieval
+   */
+  async testGetAllEntries(): Promise<any> {
+    if (!this.isConfigured()) {
+      return { error: 'Not configured' };
+    }
+    
+    try {
+      // Simple query with no variables to retrieve all entries
+      const query = `
+        query {
+          listLeaderboardEntries {
+            items {
+              id
+              playerName
+              companyProfit
+            }
+          }
+        }
+      `;
+      
+      
+      const response = await fetch(this.endpoint!, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': this.apiKey!
+        },
+        body: JSON.stringify({ query })
+      });
+      
+      const result = await response.json();
+      
+      return result;
+    } catch (error: unknown) {
+      return { error: error instanceof Error ? error.toString() : String(error) };
     }
   }
 }

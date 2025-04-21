@@ -211,7 +211,7 @@ Resources:
       FieldName: listLeaderboardEntries
       DataSourceName: !GetAtt LeaderboardTableDataSource.Name
       RequestMappingTemplate: |
-        #set($limit = 10)
+        #set($limit = 1200)
         #if($ctx.args.limit)
           #set($limit = $ctx.args.limit)
         #end

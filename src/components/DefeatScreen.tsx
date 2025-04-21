@@ -180,22 +180,8 @@ const DefeatScreen: FC<DefeatScreenProps> = ({ reason, stats, onRestart, company
         </StatItem>
       </StatsContainer>
       
-      {!isSubmitted && !showLeaderboard && (
+      {!showLeaderboard && (
         <LeaderboardSubmission>
-          <LeaderboardTitle>Submit Your Score</LeaderboardTitle>
-          <NameInput 
-            type="text" 
-            placeholder="Enter your name" 
-            value={playerName}
-            onChange={(e) => setPlayerName(e.target.value)}
-            maxLength={20}
-          />
-          <SubmitButton 
-            onClick={handleSubmitScore} 
-            disabled={isSubmitting || !playerName.trim()}
-          >
-            {isSubmitting ? 'Submitting...' : 'Submit to Leaderboard'}
-          </SubmitButton>
           <ViewButton onClick={fetchLeaderboard}>
             View Leaderboard
           </ViewButton>
@@ -213,9 +199,7 @@ const DefeatScreen: FC<DefeatScreenProps> = ({ reason, stats, onRestart, company
                 <tr>
                   <th>Rank</th>
                   <th>Name</th>
-                  <th>Company</th>
                   <th>Profit</th>
-                  <th>Status</th>
                 </tr>
               </thead>
               <tbody>
@@ -223,9 +207,7 @@ const DefeatScreen: FC<DefeatScreenProps> = ({ reason, stats, onRestart, company
                   <tr key={entry.id}>
                     <td>{index + 1}</td>
                     <td>{entry.playerName}</td>
-                    <td>{entry.company}</td>
                     <td>{formatCurrency(entry.companyProfit)}</td>
-                    <td>{entry.defeat ? `Defeated (${entry.defeat})` : 'Survived'}</td>
                   </tr>
                 ))}
                 {leaderboardData.length === 0 && (
