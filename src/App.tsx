@@ -87,6 +87,9 @@ function App() {
           companyContext={companyContext}
         />
       )}
+      <Footer>
+        Want it customized? Send a message to <FooterLink href="mailto:charlotteledoux.pro@gmail.com">charlotteledoux.pro@gmail.com</FooterLink>
+      </Footer>
     </AppContainer>
   );
 }
@@ -100,6 +103,30 @@ const AppContainer = styled.div`
   background: #f5f5f7;
   padding: 20px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  position: relative;
+`;
+
+const Footer = styled.div`
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 10px;
+  text-align: center;
+  font-size: 14px;
+  color: #5f6368;
+  border-top: 1px solid #dadce0;
+  z-index: 1000;
+`;
+
+const FooterLink = styled.a`
+  color: #35adb6;
+  text-decoration: none;
+  
+  &:hover {
+    text-decoration: underline;
+  }
 `;
 
 export default App;
