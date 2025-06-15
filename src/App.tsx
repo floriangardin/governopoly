@@ -29,6 +29,7 @@ function App() {
   const [gameState, setGameState] = useState<GameState>('start');
   const [score, setScore] = useState(0);
   const [defeatReason, setDefeatReason] = useState<DefeatReason>('budget');
+  const [difficulty, setDifficulty] = useState('easy');
   const [finalStats, setFinalStats] = useState({
     cdoBudget: 0,
     companyProfit: 0,
@@ -40,6 +41,11 @@ function App() {
   const startGame = () => {
     setGameState('playing');
     setScore(1000000); // Starting with $1M CDO budget
+  };
+  
+  // Handle difficulty change
+  const handleDifficultyChange = (newDifficulty: string) => {
+    setDifficulty(newDifficulty);
   };
   
   // End the game with victory
@@ -62,7 +68,14 @@ function App() {
   
   return (
     <AppContainer>
-      {gameState === 'start' && <GameStart onStart={startGame} companyContext={companyContext} />}
+      {gameState === 'start' && (
+        <GameStart 
+          onStart={startGame} 
+          companyContext={companyContext} 
+          difficulty={difficulty}
+          onDifficultyChange={handleDifficultyChange}
+        />
+      )}
       {gameState === 'playing' && (
         <GameScreen 
           initialScore={score} 
@@ -70,6 +83,7 @@ function App() {
           onGameVictory={endGameWithVictory} 
           onGameDefeat={endGameWithDefeat}
           companyContext={companyContext}
+          difficulty={difficulty}
         />
       )}
       {gameState === 'victory' && (
@@ -88,7 +102,11 @@ function App() {
         />
       )}
       <Footer>
-        Want it customized? Send a message to <FooterLink href="mailto:charlotteledoux.pro@gmail.com">charlotteledoux.pro@gmail.com</FooterLink>
+        Want it customized? Send a message to <FooterLink href="mailto:charlotteledoux.pro@gmail.com" style={{ marginRight: '10px' }}>charlotteledoux.pro@gmail.com</FooterLink>
+        {' • '}
+        <FooterLink href="https://buymeacoffee.com/charlotte13" target="_blank" rel="noopener noreferrer" style={{ marginLeft: '10px' }}>
+          ☕ Buy me a coffee
+        </FooterLink>
       </Footer>
     </AppContainer>
   );

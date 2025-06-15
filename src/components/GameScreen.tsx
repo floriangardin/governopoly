@@ -21,10 +21,11 @@ interface GameScreenProps {
     dataTeamSize: number;
     description: string;
   };
+  difficulty: string;
 }
 
 // Main component
-const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onGameVictory, onGameDefeat, companyContext }) => {
+const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onGameVictory, onGameDefeat, companyContext, difficulty }) => {
   // Game state
   const [cdoBudget, setCdoBudget] = useState(initialScore);
   const [companyProfit, setCompanyProfit] = useState(0);
@@ -667,6 +668,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
                             {choice.outcome.budgetImpact !== 0 && (
                               <ResponseImpact 
                                 color={formatImpactWithColor(choice.outcome.budgetImpact).color}
+                                $difficulty={difficulty}
                                 $isUnavailable={!canSelect && choice.outcome.budgetImpact < 0 && Math.abs(choice.outcome.budgetImpact) > cdoBudget}
                               >
                                 💰 {formatImpactWithColor(choice.outcome.budgetImpact).text}
@@ -674,7 +676,11 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
                             )}
                             
                             {choice.outcome.profitImpact !== 0 && (
-                              <ResponseImpact color={formatImpactWithColor(choice.outcome.profitImpact).color}>
+                              <ResponseImpact 
+                                color={formatImpactWithColor(choice.outcome.profitImpact).color}
+                                $difficulty={difficulty}
+                                $isUnavailable={!canSelect && choice.outcome.profitImpact < 0 && Math.abs(choice.outcome.profitImpact) > companyProfit}
+                              >
                                 📈 {formatImpactWithColor(choice.outcome.profitImpact).text}
                               </ResponseImpact>
                             )}
@@ -682,6 +688,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
                             {choice.outcome.dataQualityImpact !== 0 && (
                               <ResponseImpact 
                                 color={formatImpactWithColor(choice.outcome.dataQualityImpact, true).color}
+                                $difficulty={difficulty}
                                 $isUnavailable={!canSelect && choice.outcome.dataQualityImpact < 0 && Math.abs(choice.outcome.dataQualityImpact) > dataQuality}
                               >
                                 📊 {formatImpactWithColor(choice.outcome.dataQualityImpact, true).text}
@@ -691,6 +698,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ initialScore, initialMonth, onG
                             {choice.outcome.reputationImpact !== 0 && (
                               <ResponseImpact 
                                 color={formatImpactWithColor(choice.outcome.reputationImpact, true).color}
+                                $difficulty={difficulty}
                                 $isUnavailable={!canSelect && choice.outcome.reputationImpact < 0 && Math.abs(choice.outcome.reputationImpact) > reputation}
                               >
                                 ⭐ {formatImpactWithColor(choice.outcome.reputationImpact, true).text}
@@ -1225,11 +1233,13 @@ const ResponseImpacts = styled.div`
 interface ResponseImpactProps {
   color: string;
   $isUnavailable?: boolean;
+  $difficulty: string;
 }
 
 const ResponseImpact = styled.span<ResponseImpactProps>`
   color: ${props => props.$isUnavailable ? '#cf0000' : props.color};
   font-weight: ${props => props.$isUnavailable ? 'bold' : 'normal'};
+  display: ${props => props.$difficulty === 'hard' ? 'none' : 'block'};
   font-size: 13px;
   background: ${props => props.$isUnavailable ? 'rgba(207, 0, 0, 0.1)' : 'transparent'};
   padding: ${props => props.$isUnavailable ? '2px 4px' : '0'};

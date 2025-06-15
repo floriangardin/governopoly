@@ -14,13 +14,15 @@ interface GameStartProps {
     dataTeamSize: number;
     description: string;
   };
+  difficulty: string;
+  onDifficultyChange: (difficulty: string) => void;
 }
 
 const formatNumber = (num: number): string => {
   return new Intl.NumberFormat('en-US').format(num);
 };
 
-const GameStart: React.FC<GameStartProps> = ({ onStart, companyContext }) => {
+const GameStart: React.FC<GameStartProps> = ({ onStart, companyContext, difficulty, onDifficultyChange }) => {
   const { playSound, toggleMusic, isMusicMuted, audioReady } = useSoundService();
   
   useEffect(() => {
@@ -41,7 +43,7 @@ const GameStart: React.FC<GameStartProps> = ({ onStart, companyContext }) => {
       )}
       
       <HeaderContainer>
-      <CompanyLogoImage 
+        <CompanyLogoImage 
           src="/og-no-text.png" 
           alt="Nine Lives Insurance logo"
           style={{ width: '150px', height: '150px' }}
@@ -52,9 +54,26 @@ const GameStart: React.FC<GameStartProps> = ({ onStart, companyContext }) => {
         </MusicButton>
       </HeaderContainer>
       
+      <DifficultySelector>
+        <DifficultyLabel>Difficulty:</DifficultyLabel>
+        <DifficultyButtons>
+          <DifficultyButton 
+            selected={difficulty === 'easy'} 
+            onClick={() => onDifficultyChange('easy')}
+          >
+            Easy
+          </DifficultyButton>
+          <DifficultyButton 
+            selected={difficulty === 'hard'} 
+            onClick={() => onDifficultyChange('hard')}
+          >
+            Hard
+          </DifficultyButton>
+        </DifficultyButtons>
+      </DifficultySelector>
       
       <Description>
-      You're the newly appointed Chief Data Officer. Your role is to guide your company through data chaos, one paw-step at a time. Expect surprises in your inbox and remember : data is your territory now.
+        You're the newly appointed Chief Data Officer. Your role is to guide your company through data chaos, one paw-step at a time. Expect surprises in your inbox and remember : data is your territory now.
       </Description>
     
       
@@ -318,6 +337,40 @@ const MusicButton = styled.button`
   
   &:active {
     background: #ceeaed;
+  }
+`;
+
+const DifficultySelector = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+`;
+
+const DifficultyLabel = styled.span`
+  font-size: 16px;
+  color: #3c4043;
+  font-weight: 500;
+`;
+
+const DifficultyButtons = styled.div`
+  display: flex;
+  gap: 10px;
+`;
+
+const DifficultyButton = styled.button<{ selected: boolean }>`
+  padding: 8px 16px;
+  border: 2px solid ${props => props.selected ? '#35adb6' : '#dadce0'};
+  border-radius: 6px;
+  background: ${props => props.selected ? '#35adb6' : 'white'};
+  color: ${props => props.selected ? 'white' : '#3c4043'};
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  
+  &:hover {
+    border-color: #35adb6;
+    background: ${props => props.selected ? '#35adb6' : '#e8f7f8'};
   }
 `;
 
